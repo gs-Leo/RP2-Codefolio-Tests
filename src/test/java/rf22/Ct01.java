@@ -1,6 +1,5 @@
 package rf22;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,41 +28,12 @@ public class Ct01 {
     private final String FIREBASE_KEY = "firebase:authUser:AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg:[DEFAULT]";
 
     // (Valor JSON - Objeto 'value' formatado para Java)
-    private final String FIREBASE_VALUE ="{\n" +
-            "    \"apiKey\": \"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\",\n" +
-            "    \"appName\": \"[DEFAULT]\",\n" +
-            "    \"createdAt\": \"1760400691226\",\n" +
-            "    \"displayName\": \"Rodrigo Thoma da Silva\",\n" +
-            "    \"email\": \"rodrigothoma.aluno@unipampa.edu.br\",\n" +
-            "    \"emailVerified\": true,\n" +
-            "    \"isAnonymous\": false,\n" +
-            "    \"lastLoginAt\": \"1762636773459\",\n" +
-            "    \"phoneNumber\": null,\n" +
-            "    \"photoURL\": \"https://lh3.googleusercontent.com/a/ACg8ocLwnrKxW0oUL58-rcdaYs5RaOPQw48A54q2_oTORwB1NOCgnw=s96-c\",\n" +
-            "    \"providerData\": [\n" +
-            "      {\n" +
-            "        \"providerId\": \"google.com\",\n" +
-            "        \"uid\": \"106869220410814831244\",\n" +
-            "        \"displayName\": \"Rodrigo Thoma da Silva\",\n" +
-            "        \"email\": \"rodrigothoma.aluno@unipampa.edu.br\",\n" +
-            "        \"phoneNumber\": null\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"stsTokenManager\": {\n" +
-            "      \"accessToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjU0NTEzMjA5OWFkNmJmNjEzODJiNmI0Y2RlOWEyZGZlZDhjYjMwZjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTGVvbmFyZG8gR29uY2FsdmVzIGRhIFNpbHZhIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0p0cTJyaXkyT1hIUHZ6R0tzUjUzUDlhZmtESEJZY3ZNLVMyTUpWZVBDTGhacV9DRm89czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVhY3QtbmEtcHJhdGljYSIsImF1ZCI6InJlYWN0LW5hLXByYXRpY2EiLCJhdXRoX3RpbWUiOjE3NjI2MzQ2MTQsInVzZXJfaWQiOiJiTm9ZVHNoNUdjYnFOYlNGVE1XNDkyc0ZmbjEyIiwic3ViIjoiYk5vWVRzaDVHY2JxTmJTRlRNVzQ5MnNGZm4xMiIsImlhdCI6MTc2MjYzNDYxNCwiZXhwIjoxNzYyNjM4MjE0LCJlbWFpbCI6Imxlb25hcmRvZ2RzMy5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjExNjAwNTAzNDAzMjkxMjI2MjY1NyJdLCJlbWFpbCI6WyJsZW9uYXJkb2dkczMuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.X3SIJP91z5Obi0HKvP0WOKsbn8GpblUuU6ugPElX1Qbw2TLc64QuBix_98RpB6BTlXdNcvn2FTf82gZAD9n2I238PaJTDpzHOIBOWOlXDr8DAVA5iTj_TlO9eV0-InKclHehXN5YQA4hjxJOjFfIcuZtL4JsyHvdu12STYX2kdyvjapeNXKM71QwxUkzFL8-eyJhbGciOiJSUzI1NiIsImtpZCI6IjM4MDI5MzRmZTBlZWM0NmE1ZWQwMDA2ZDE0YTFiYWIwMWUzNDUwODMiLCJ0eXAiOiJKV1QifQ\",\n" +
-            "      \"expirationTime\": 1762985423425    ,\n" +
-            "      \"refreshToken\": \"AMf-vBy9JlK4zfGx9S5QnnyQIdly9tlJlSY57DajZ4WWoNJVnoHc4SE3MsLWJKXz_K9XX4AGUGasRLV8bUAQhCSWHXnpH4e9OMFTqd7zWIIbkH4cRtqSAxlgkz9r5K0H8bxj7qIhomucpLaFVG31Pv_i325JaUiMlchA5wke2jUUEbgd177msk5twJk5g4qjmeOxSrsEAhNHpnWof46pWVnhxF3J9SdXUV6e_BBfs7NIDu9hyR_FEEDd1LfkmJoM-ulxLh01cnvdWBXDZhADC8f0g8HATKPeOb9L_tUp2GZbSCe6koyA0TnEm6XDkosXo4CJieGHBHLAVUu6wBAOGTzAP8T29G2iCbl1HzARybYGchNP8LrCK3nszH8q1uq2i3M6fcrzQ2w5vU5pNdKzqXEo8aB6vzG8jDsL3H7DnINowgK4HvfMvNxK5pWTxEDvWYZGox9aHC4fNDLq5M6arW3J8OZE0zTmFQ\",\n" +
-            "      \"tenantId\": null\n" +
-            "    },\n" +
-            "    \"uid\": \"yW73IdpHtTX1Ou7qmjKAvMqJpVG2\",\n" +
-            "    \"_redirectEventId\": null\n" +
-            "  }";  ;
+    private final String FIREBASE_VALUE = "{\"apiKey\":\"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\",\"appName\":\"[DEFAULT]\",\"createdAt\":\"1760400691226\",\"displayName\":\"Rodrigo Thoma da Silva\",\"email\":\"rodrigothoma.aluno@unipampa.edu.br\",\"emailVerified\":true,\"isAnonymous\":false,\"lastLoginAt\":\"1762636773459\",\"phoneNumber\":null,\"photoURL\":\"https://lh3.googleusercontent.com/a/ACg8ocLwnrKxW0oUL58-rcdaYs5RaOPQw48A54q2_oTORwB1NOCgnw=s96-c\",\"providerData\":[{\"providerId\":\"google.com\",\"uid\":\"106869220410814831244\",\"displayName\":\"Rodrigo Thoma da Silva\",\"email\":\"rodrigothoma.aluno@unipampa.edu.br\",\"phoneNumber\":null}],\"stsTokenManager\":{\"accessToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjM4MDI5MzRmZTBlZWM0NmE1ZWQwMDA2ZDE0YTFiYWIwMWUzNDUwODMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUm9kcmlnbyBUaG9tYSBkYSBTaWx2YSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMd25yS3hXMG9VTDU4LXJjZGFZczVSYU9QUXc0OEE1NHEyX29UT1J3QjFOT0Nnbnc9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVhY3QtbmEtcHJhdGljYSIsImF1ZCI6InJlYWN0LW5hLXByYXRpY2EiLCJhdXRoX3RpbWUiOjE3NjI1Mzk2NTUsInVzZXJfaWQiOiJ5VzczSWRwSHRUWDFPdTdxbWpLQXZNcUpwVkcyIiwic3ViIjoieVc3M0lkcEh0VFgxT3U3cW1qS0F2TXFKcFZHMiIsImlhdCI6MTc2Mjk3ODUyNCwiZXhwIjoxNzYyOTgyMTI0LCJlbWFpbCI6InJvZHJpZ290aG9tYS5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuYY29tIjpbIjEwNjg2OTIyMDQxMDgxNDgzMTI0NCJdLCJlbWFpbCI6WyJyb2RyaWdvdGhvbWEuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.jMMo40wekA0T22wL9CVeMOWoaVvksZ3WBicjoZV2M4s0xZtGzy7H9Pa6O6gmpCnIuFBNGzzSZ4p6-sid_UyepQuT11srhJv795eqQq2IvODnSw4H0akQ_CeoibJ5nbLotwZPMYnWM5tYaex1eps-A8SuLHC0LrcCKl68c1R96TeNnLLiRu47WtWTTK4DjNZcnPWJH_l9H7vSma5KIXBYA2luwCQwlmSxHBWwtDvfXkSuuBxPwwdFbLWeXo-ILXrdMgtHekBh2_hnPQ7ENrLHuiMC489Kr5auBIJIWY7xq5pWthIHH7LXouX73vhOm2De0p-qpclO7w_5I21adEwKyQ\",\"expirationTime\":1762982122470,\"refreshToken\":\"AMf-vBy9JlK4zfGx9S5QnnyQIdly9tlJlSY57DajZ4WWoNJVnoHc4SE3MsLWJKXz_K9XX4AGUGasRLV8bUAQhCSWHXnpH4e9OMFTqd7zWIIbkH4cRtqSAxlgkz9r5K0H8bxj7qIhomucpLaFVG31Pv_i325JaUiMlchA5wke2jUUEbgd177msk5twJk5g4qjmeOxSrsEAhNHpnWof46pWVnhxF3J9SdXUV6e_BBfs7NIDu9hyR_FEEDd1LfkmJoM-ulxLh01cnvdWBXDZhADC8f0g8HATKPeOb9L_tUp2GZbSCe6koyA0TnEm6XDkosXo4CJieGHBHLAVUu6wBAOGTzAP8T29G2iCbl1HzARybYGchNP8LrCK3nszH8q1uq2i3M6fcrzQ2w5vU5pNdKzqXEo8aB6vzG8jDsL3H7DnINowgK4HvfMvNxK5pWTxEDvWYZGox9aHC4fNDLq5M6arW3J8OZE0zTmFQ\",\"tenantId\":null},\"uid\":\"yW73IdpHtTX1Ou7qmjKAvMqJpVG2\",\"_redirectEventId\":null}";
 
 
     // Adicionamos 'throws InterruptedException' para o Thread.sleep
     @BeforeEach
     public void setup() throws InterruptedException {
-        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 
@@ -224,7 +194,7 @@ public class Ct01 {
     @AfterEach
     public void teardown() {
         if (driver != null) {
-            // driver.quit(); 
+            // driver.quit();
         }
     }
 }

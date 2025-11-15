@@ -1,5 +1,4 @@
 
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
 import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RFVinteEDois {
 
     private WebDriver driver;
@@ -54,58 +57,59 @@ public class RFVinteEDois {
             driver.quit();
             throw new RuntimeException("Falha no setup do Local Storage", e);
         }
-        
+
         // 3. Recarrega a página (agora com o token injetado)
         System.out.println("Recarregando a página...");
         driver.navigate().refresh();
-        
+
         verificarLogin();
     }
-    
+
     @AfterEach
     public void teardown() {
         if (driver != null) {
             // driver.quit();
         }
     }
-    
+
     @Test
-    public void CT22_01_CadastroAvaliacaoSucesso(){
+    @Order(1)
+    public void CT22_01_CadastroAvaliacaoSucesso() {
         criarCurso();
-        
+
         // Clicando em "Avaliações"
         WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
         tabAvaliacoes.click();
         System.out.println("Aba Avaliações acessada com sucesso!");
-        
+
         //Dando nome à avaliação
         WebElement NomeAvaliacao;
-        NomeAvaliacao= wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        NomeAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
         String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
         WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
         NomeAvInput.sendKeys("Prova 1");
-        
+
         System.out.println("Nome atribuído com Sucesso!");
-        
+
         // Dando porcentagem à avaliação
         WebElement LabelPercentual;
-        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));        
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
         String idPercentual = LabelPercentual.getAttribute("for");
         WebElement InputPercentual = driver.findElement(By.id(idPercentual));
-        InputPercentual.clear(); 
+        InputPercentual.clear();
         InputPercentual.sendKeys("40");
 
         System.out.println("Percentual atribuído com Sucesso!");
-        
+
         // Clicando no botão "Adicionar Avaliação"
         WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
         botaoAdicionar.click();
-        
+
         System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
-        
-         // Procura pelo elemento que contenha o texto "Prova 1"
+
+        // Procura pelo elemento que contenha o texto "Prova 1"
         try {
             WebElement avaliacaoNaLista;
             avaliacaoNaLista = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'Prova 1')]")));
@@ -113,22 +117,71 @@ public class RFVinteEDois {
             System.out.println("A avaliação 'Prova 1' foi encontrada na lista!");
 
             //Procura pelo percentual "40"
-            WebElement percentualAvaliacao= wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[normalize-space()='40%']")));
+            WebElement percentualAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[normalize-space()='40%']")));
             assertTrue(percentualAvaliacao.isDisplayed(), "Erro: Porcentagem '40%' não encontrada.");
             System.out.println("Percentual '40%' encontrado");;
 
         } catch (Exception e) {
             System.out.println("FALHA: O elemento não foi encontrado ou demorou demais para aparecer.");
             throw e; // Relança o erro para o JUnit marcar o teste como falho
-        }      
+        }
     }
-    
-    //-----------Métodos Auxiliares-----------------------------------------
 
-    /**
-     * Módulo que executa o roteiro de criação de curso
-     */
-    String tituloCurso;
+    @Test
+    @Order(2)
+    public void CT22_02_TentativaCadastroSemNome() {
+        criarCurso();
+
+        // Clicando em "Avaliações"
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        // Não atribuindo nome propositalmente
+        // Dando porcentagem à avaliação
+        WebElement LabelPercentual;
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+        String idPercentual = LabelPercentual.getAttribute("for");
+        WebElement InputPercentual = driver.findElement(By.id(idPercentual));
+        InputPercentual.clear();
+        InputPercentual.sendKeys("30");
+
+        System.out.println("Percentual atribuído com Sucesso!");
+
+        // Clicando no botão "Adicionar Avaliação"
+        WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+
+        try {
+            WebElement labelNome = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+            WebElement inputNome = driver.findElement(By.id(labelNome.getAttribute("for")));
+
+            String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputNome);
+
+            System.out.println("Mensagem capturada do navegador: " + mensagemNavegador);
+
+            boolean contemMensagem = mensagemNavegador.contains("Preencha este campo");
+
+            assertTrue(contemMensagem, "Erro: O campo Nome não apresentou a validação 'Preencha este campo'. Mensagem atual: " + mensagemNavegador);
+
+            System.out.println("O navegador bloqueou o envio e mostrou a mensagem correta.");
+
+        } catch (Exception e) {
+            System.out.println("Mensagem de erro não encontrada: " + e.getMessage());
+            throw e;
+        }
+    }
+
+        //-----------Métodos Auxiliares-----------------------------------------
+        /**
+         * Módulo que executa o roteiro de criação de curso
+         */
+        String tituloCurso;
+
     private void criarCurso() {
         System.out.println("Iniciando o roteiro de criação de curso...");
 
@@ -168,7 +221,7 @@ public class RFVinteEDois {
             ));
             String titleId = titleLabel.getAttribute("for");
             WebElement titleInput = driver.findElement(By.id(titleId));
-             tituloCurso = "Curso Selenium " + System.currentTimeMillis();
+            tituloCurso = "Curso Selenium " + System.currentTimeMillis();
             titleInput.sendKeys(tituloCurso);
 
             // Descrição (Método robusto para IDs dinâmicos)
@@ -238,8 +291,4 @@ public class RFVinteEDois {
             assertTrue(false, "Falha na injeção de sessão do Firebase. O token pode estar expirado.");
         }
     }
-    
-    
-    
-
 }

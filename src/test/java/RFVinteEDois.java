@@ -1,4 +1,4 @@
-package rf22;
+
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,16 +10,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
-
 import java.time.Duration;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Ct01 {
+public class RFVinteEDois {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private final Duration TIMEOUT = Duration.ofSeconds(15);
+    private final Duration TIMEOUT = Duration.ofSeconds(30);
     private final String URL_BASE = "https://testes.codefolio.com.br/";
     private JavascriptExecutor js; // Tornando o JS Executor global
 
@@ -30,8 +28,6 @@ public class Ct01 {
     // (Valor JSON - Objeto 'value' formatado para Java)
     private final String FIREBASE_VALUE = "{\"apiKey\":\"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\",\"appName\":\"[DEFAULT]\",\"createdAt\":\"1760400691226\",\"displayName\":\"Rodrigo Thoma da Silva\",\"email\":\"rodrigothoma.aluno@unipampa.edu.br\",\"emailVerified\":true,\"isAnonymous\":false,\"lastLoginAt\":\"1762636773459\",\"phoneNumber\":null,\"photoURL\":\"https://lh3.googleusercontent.com/a/ACg8ocLwnrKxW0oUL58-rcdaYs5RaOPQw48A54q2_oTORwB1NOCgnw=s96-c\",\"providerData\":[{\"providerId\":\"google.com\",\"uid\":\"106869220410814831244\",\"displayName\":\"Rodrigo Thoma da Silva\",\"email\":\"rodrigothoma.aluno@unipampa.edu.br\",\"phoneNumber\":null}],\"stsTokenManager\":{\"accessToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjM4MDI5MzRmZTBlZWM0NmE1ZWQwMDA2ZDE0YTFiYWIwMWUzNDUwODMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUm9kcmlnbyBUaG9tYSBkYSBTaWx2YSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMd25yS3hXMG9VTDU4LXJjZGFZczVSYU9QUXc0OEE1NHEyX29UT1J3QjFOT0Nnbnc9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVhY3QtbmEtcHJhdGljYSIsImF1ZCI6InJlYWN0LW5hLXByYXRpY2EiLCJhdXRoX3RpbWUiOjE3NjI1Mzk2NTUsInVzZXJfaWQiOiJ5VzczSWRwSHRUWDFPdTdxbWpLQXZNcUpwVkcyIiwic3ViIjoieVc3M0lkcEh0VFgxT3U3cW1qS0F2TXFKcFZHMiIsImlhdCI6MTc2Mjk3ODUyNCwiZXhwIjoxNzYyOTgyMTI0LCJlbWFpbCI6InJvZHJpZ290aG9tYS5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuYY29tIjpbIjEwNjg2OTIyMDQxMDgxNDgzMTI0NCJdLCJlbWFpbCI6WyJyb2RyaWdvdGhvbWEuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.jMMo40wekA0T22wL9CVeMOWoaVvksZ3WBicjoZV2M4s0xZtGzy7H9Pa6O6gmpCnIuFBNGzzSZ4p6-sid_UyepQuT11srhJv795eqQq2IvODnSw4H0akQ_CeoibJ5nbLotwZPMYnWM5tYaex1eps-A8SuLHC0LrcCKl68c1R96TeNnLLiRu47WtWTTK4DjNZcnPWJH_l9H7vSma5KIXBYA2luwCQwlmSxHBWwtDvfXkSuuBxPwwdFbLWeXo-ILXrdMgtHekBh2_hnPQ7ENrLHuiMC489Kr5auBIJIWY7xq5pWthIHH7LXouX73vhOm2De0p-qpclO7w_5I21adEwKyQ\",\"expirationTime\":1762982122470,\"refreshToken\":\"AMf-vBy9JlK4zfGx9S5QnnyQIdly9tlJlSY57DajZ4WWoNJVnoHc4SE3MsLWJKXz_K9XX4AGUGasRLV8bUAQhCSWHXnpH4e9OMFTqd7zWIIbkH4cRtqSAxlgkz9r5K0H8bxj7qIhomucpLaFVG31Pv_i325JaUiMlchA5wke2jUUEbgd177msk5twJk5g4qjmeOxSrsEAhNHpnWof46pWVnhxF3J9SdXUV6e_BBfs7NIDu9hyR_FEEDd1LfkmJoM-ulxLh01cnvdWBXDZhADC8f0g8HATKPeOb9L_tUp2GZbSCe6koyA0TnEm6XDkosXo4CJieGHBHLAVUu6wBAOGTzAP8T29G2iCbl1HzARybYGchNP8LrCK3nszH8q1uq2i3M6fcrzQ2w5vU5pNdKzqXEo8aB6vzG8jDsL3H7DnINowgK4HvfMvNxK5pWTxEDvWYZGox9aHC4fNDLq5M6arW3J8OZE0zTmFQ\",\"tenantId\":null},\"uid\":\"yW73IdpHtTX1Ou7qmjKAvMqJpVG2\",\"_redirectEventId\":null}";
 
-
-    // Adicionamos 'throws InterruptedException' para o Thread.sleep
     @BeforeEach
     public void setup() throws InterruptedException {
         driver = new ChromeDriver();
@@ -42,7 +38,6 @@ public class Ct01 {
         js = (JavascriptExecutor) driver; // Inicializa o JS Executor
 
         // --- ESTRATÉGIA LOCAL STORAGE (Formato Correto) ---
-
         // 1. Carrega o domínio
         driver.get(URL_BASE);
 
@@ -59,62 +54,81 @@ public class Ct01 {
             driver.quit();
             throw new RuntimeException("Falha no setup do Local Storage", e);
         }
-
+        
         // 3. Recarrega a página (agora com o token injetado)
         System.out.println("Recarregando a página...");
         driver.navigate().refresh();
-    }
-
-    @Test
-    public void testFazerLoginECriarCurso() throws InterruptedException {
-        // --- 1. Verificação de Login ---
+        
         verificarLogin();
-
-        // --- 2. Processo de Criação de Curso ---
-        criarCurso();
     }
-
-    /**
-     * Verifica se o login foi bem-sucedido
-     */
-    private void verificarLogin() throws InterruptedException {
-        System.out.println("Verificando se o login foi processado...");
-        try {
-            // 1. Espera forçada de 5s para o Firebase (JS assíncrono) processar o login
-            System.out.println("Aguardando 5s para o Firebase SDK processar o login...");
-            Thread.sleep(5000);
-
-            // 2. Clicar no botão de perfil (logado)
-            WebElement profileButton = wait.until(ExpectedConditions.presenceOfElementLocated(
-                    By.cssSelector("button[aria-label='Configurações da Conta']")
-            ));
-
-            js.executeScript("arguments[0].click();", profileButton);
-            System.out.println("Clicou no botão de perfil para abrir o menu.");
-
-            // 3. Esperar o menu abrir e o botão "Sair" ficar VISÍVEL
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//li[normalize-space()='Sair']")
-            ));
-
-            System.out.println("Login validado com sucesso!");
-
-            // Clica fora para fechar o menu (opcional)
-            js.executeScript("document.body.click();");
-
-        } catch (Exception e) {
-            System.out.println("--- ERRO NA VALIDAÇÃO DO LOGIN ---");
-            System.out.println("Causa provável: O token no 'FIREBASE_VALUE' expirou ou está incorreto.");
-            System.out.println("Exceção: " + e.getMessage());
-
-            assertTrue(false, "Falha na injeção de sessão do Firebase. O token pode estar expirado.");
+    
+    @AfterEach
+    public void teardown() {
+        if (driver != null) {
+            // driver.quit();
         }
     }
+    
+    @Test
+    public void CT22_01_CadastroAvaliacaoSucesso(){
+        criarCurso();
+        
+        // Clicando em "Avaliações"
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+        
+        //Dando nome à avaliação
+        WebElement NomeAvaliacao;
+        NomeAvaliacao= wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
+        WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
+        NomeAvInput.sendKeys("Prova 1");
+        
+        System.out.println("Nome atribuído com Sucesso!");
+        
+        // Dando porcentagem à avaliação
+        WebElement LabelPercentual;
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));        
+        String idPercentual = LabelPercentual.getAttribute("for");
+        WebElement InputPercentual = driver.findElement(By.id(idPercentual));
+        InputPercentual.clear(); 
+        InputPercentual.sendKeys("40");
 
+        System.out.println("Percentual atribuído com Sucesso!");
+        
+        // Clicando no botão "Adicionar Avaliação"
+        WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+        
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+        
+         // Procura pelo elemento que contenha o texto "Prova 1"
+        try {
+            WebElement avaliacaoNaLista;
+            avaliacaoNaLista = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'Prova 1')]")));
+            assertTrue(avaliacaoNaLista.isDisplayed(), "Erro: A avaliação 'Prova 1' não apareceu na lista após salvar.");
+            System.out.println("A avaliação 'Prova 1' foi encontrada na lista!");
+
+            //Procura pelo percentual "40"
+            WebElement percentualAvaliacao= wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[normalize-space()='40%']")));
+            assertTrue(percentualAvaliacao.isDisplayed(), "Erro: Porcentagem '40%' não encontrada.");
+            System.out.println("Percentual '40%' encontrado");;
+
+        } catch (Exception e) {
+            System.out.println("FALHA: O elemento não foi encontrado ou demorou demais para aparecer.");
+            throw e; // Relança o erro para o JUnit marcar o teste como falho
+        }      
+    }
+    
+    //-----------Métodos Auxiliares-----------------------------------------
 
     /**
      * Módulo que executa o roteiro de criação de curso
      */
+    String tituloCurso;
     private void criarCurso() {
         System.out.println("Iniciando o roteiro de criação de curso...");
 
@@ -154,7 +168,7 @@ public class Ct01 {
             ));
             String titleId = titleLabel.getAttribute("for");
             WebElement titleInput = driver.findElement(By.id(titleId));
-            String tituloCurso = "Curso Selenium " + System.currentTimeMillis();
+             tituloCurso = "Curso Selenium " + System.currentTimeMillis();
             titleInput.sendKeys(tituloCurso);
 
             // Descrição (Método robusto para IDs dinâmicos)
@@ -172,16 +186,13 @@ public class Ct01 {
             salvarButton.click();
             System.out.println("Formulário submetido.");
 
-            // --- Verificação Final ---
-            System.out.println("Aguardando redirecionamento para a lista de cursos...");
-            wait.until(ExpectedConditions.urlContains("/manage-courses"));
+            WebElement okButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='OK!']")));
+            okButton.click();
 
-            // Verifica se o novo curso aparece na lista (assumindo que o título é um <h6>)
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//h6[text()='" + tituloCurso + "']")
-            ));
+            WebElement closeButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@aria-label='close']")));
+            closeButton.click();
 
-            System.out.println("Teste de Criação de Curso concluído com sucesso!");
+            System.out.println(" Criação de Curso concluído com sucesso!");
 
         } catch (Exception e) {
             System.out.println("--- ERRO DURANTE A CRIAÇÃO DO CURSO ---");
@@ -191,10 +202,44 @@ public class Ct01 {
         }
     }
 
-    @AfterEach
-    public void teardown() {
-        if (driver != null) {
-            // driver.quit();
+    /**
+     * Verifica se o login foi bem-sucedido
+     */
+    private void verificarLogin() throws InterruptedException {
+        System.out.println("Verificando se o login foi processado...");
+        try {
+            // 1. Espera forçada de 5s para o Firebase (JS assíncrono) processar o login
+            System.out.println("Aguardando 5s para o Firebase SDK processar o login...");
+            Thread.sleep(5000);
+
+            // 2. Clicar no botão de perfil (logado)
+            WebElement profileButton = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("button[aria-label='Configurações da Conta']")
+            ));
+
+            js.executeScript("arguments[0].click();", profileButton);
+            System.out.println("Clicou no botão de perfil para abrir o menu.");
+
+            // 3. Esperar o menu abrir e o botão "Sair" ficar VISÍVEL
+            wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//li[normalize-space()='Sair']")
+            ));
+
+            System.out.println("Login validado com sucesso!");
+
+            // Clica fora para fechar o menu (opcional)
+            js.executeScript("document.body.click();");
+
+        } catch (Exception e) {
+            System.out.println("--- ERRO NA VALIDAÇÃO DO LOGIN ---");
+            System.out.println("Causa provável: O token no 'FIREBASE_VALUE' expirou ou está incorreto.");
+            System.out.println("Exceção: " + e.getMessage());
+
+            assertTrue(false, "Falha na injeção de sessão do Firebase. O token pode estar expirado.");
         }
     }
+    
+    
+    
+
 }

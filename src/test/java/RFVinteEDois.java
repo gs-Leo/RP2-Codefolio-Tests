@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
 import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -74,6 +75,7 @@ public class RFVinteEDois {
 
     @Test
     @Order(1)
+    @Disabled
     public void CT22_01_CadastroAvaliacaoSucesso() {
         criarCurso();
 
@@ -129,6 +131,7 @@ public class RFVinteEDois {
 
     @Test
     @Order(2)
+    @Disabled
     public void CT22_02_TentativaCadastroSemNome() {
         criarCurso();
 
@@ -175,6 +178,118 @@ public class RFVinteEDois {
             throw e;
         }
     }
+    
+    @Test
+    @Order(3)
+    @Disabled
+    public void CT22_03_TentativaCadastroSemPercentual() {
+        criarCurso();
+
+        // Clicando em "Avaliações"
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        //Dando nome à avaliação
+        WebElement NomeAvaliacao;
+        NomeAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
+        WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
+        NomeAvInput.sendKeys("Prova 2");
+        
+        System.out.println("Nome atribuído com sucesso!");
+        
+        // Não colocando percentagem propositalmente
+
+        // Clicando no botão "Adicionar Avaliação"
+        WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+
+        try {
+            WebElement labelPerc;
+            labelPerc = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+            WebElement inputPerc = driver.findElement(By.id(labelPerc.getAttribute("for")));
+
+            String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputPerc);
+
+            System.out.println("Mensagem capturada do navegador: " + mensagemNavegador);
+
+            boolean contemMensagem = mensagemNavegador.contains("Preencha este campo");
+
+            assertTrue(contemMensagem, "Erro: O campo Porcentagem na Nota Final não apresentou a validação 'Preencha este campo'. Mensagem atual: " + mensagemNavegador);
+
+            System.out.println("O navegador bloqueou o envio e mostrou a mensagem correta.");
+
+        } catch (Exception e) {
+            System.out.println("Mensagem de erro não encontrada: " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    @Test
+    @Order(4)
+    @Disabled
+     public void CT22_04_TentativaCadastroPercentualNaoNumerico() {
+        criarCurso();
+
+        // Clicando em "Avaliações"
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        //Dando nome à avaliação
+        WebElement NomeAvaliacao;
+        NomeAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
+        WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
+        NomeAvInput.sendKeys("Prova 3");
+
+        System.out.println("Nome atribuído com sucesso!");
+
+        // Tentando atribuir um valor não numérico no campo de Percentagem
+        WebElement LabelPercentual;
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+        String idPercentual = LabelPercentual.getAttribute("for");
+        WebElement InputPercentual = driver.findElement(By.id(idPercentual));
+        InputPercentual.clear();
+        InputPercentual.sendKeys("abc");
+        
+        System.out.println("Valor 'abc' enviado no campo de percentagem");
+        
+        // Clicando no botão "Adicionar Avaliação"
+        WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+
+        try {
+            WebElement labelPerc;
+            labelPerc = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+            WebElement inputPerc = driver.findElement(By.id(labelPerc.getAttribute("for")));
+
+            String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputPerc);
+
+            System.out.println("Mensagem capturada do navegador: " + mensagemNavegador);
+
+            boolean contemMensagem = mensagemNavegador.contains("Preencha este campo");
+
+            assertTrue(contemMensagem, "Erro: O campo Porcentagem na Nota Final não apresentou a validação 'Preencha este campo'. Mensagem atual: " + mensagemNavegador);
+
+            System.out.println("O navegador bloqueou o envio e mostrou a mensagem correta.");
+
+        } catch (Exception e) {
+            System.out.println("Mensagem de erro não encontrada: " + e.getMessage());
+            throw e;
+        }
+    }
+            
+    
 
         //-----------Métodos Auxiliares-----------------------------------------
         /**

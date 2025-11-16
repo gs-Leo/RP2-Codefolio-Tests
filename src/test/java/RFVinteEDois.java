@@ -288,6 +288,64 @@ public class RFVinteEDois {
             throw e;
         }
     }
+     
+     @Test
+    @Order(5)
+     public void CT22_05_TentativaCadastroPercentualMaiorQue100() {
+        criarCurso();
+
+        // Clicando em "Avaliações"
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        //Dando nome à avaliação
+        WebElement NomeAvaliacao;
+        NomeAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
+        WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
+        NomeAvInput.sendKeys("Prova 4");
+
+        System.out.println("Nome atribuído com sucesso!");
+
+        // Tentando atribuir um valor não numérico no campo de Percentagem
+        WebElement LabelPercentual;
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+        String idPercentual = LabelPercentual.getAttribute("for");
+        WebElement InputPercentual = driver.findElement(By.id(idPercentual));
+        InputPercentual.clear();
+        InputPercentual.sendKeys("101");
+        
+        System.out.println("Valor '101' enviado no campo de percentagem");
+        
+        // Clicando no botão "Adicionar Avaliação"
+        WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+
+        try {
+            WebElement labelPerc;
+            labelPerc = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+            WebElement inputPerc = driver.findElement(By.id(labelPerc.getAttribute("for")));
+
+            String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputPerc);
+
+            System.out.println("Mensagem capturada do navegador: " + mensagemNavegador);
+
+            boolean contemMensagem = mensagemNavegador.contains("O valor deve ser menor ou igual a 100.");
+
+            assertTrue(contemMensagem, "Erro: O campo Porcentagem na Nota Final não apresentou validação para número maior que 100. Mensagem atual: " + mensagemNavegador);
+
+            System.out.println("O navegador bloqueou o envio e mostrou a mensagem correta.");
+
+        } catch (Exception e) {
+            System.out.println("Mensagem de erro não encontrada: " + e.getMessage());
+            throw e;
+        }
+    }
             
     
 

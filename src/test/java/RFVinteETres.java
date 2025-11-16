@@ -66,13 +66,12 @@ public class RFVinteETres {
     @AfterEach
     public void teardown() {
         if (driver != null) {
-            // driver.quit();
+            driver.quit();
         }
     }
 
     @Test
     @Order(1)
-    @Disabled
     public void CT23_01_EdicaoAvaliacaoSucesso() {
         criarCurso();
 
@@ -132,10 +131,9 @@ public class RFVinteETres {
         assertTrue(percEditado.isDisplayed(), "Erro: O percentual não atualizou para '30%'");
 
     }
-    
+
     @Test
     @Order(2)
-    @Disabled
     public void CT23_02_TentativaEdicaoSemNome() {
         criarCurso();
 
@@ -171,27 +169,27 @@ public class RFVinteETres {
         String selectAll = org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a");
         inputNomeEdicao.sendKeys(selectAll);
         inputNomeEdicao.sendKeys(org.openqa.selenium.Keys.DELETE);
-        
+
         System.out.println("Campo nome vazio");
-        
+
         WebElement botaoAtualizar;
         botaoAtualizar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Atualizar Avaliação')]")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAtualizar);
         botaoAtualizar.click();
         System.out.println("Botão 'Atualizar Avaliação' clicado.");
-        
+
         try {
             String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputNomeEdicao);
             System.out.println("Mensagem capturada: " + mensagemNavegador);
 
             boolean contemMensagem = mensagemNavegador.contains("Preencha este campo");
             assertTrue(contemMensagem, "O campo Nome aceitou ficar vazio na edição! Mensagem: " + mensagemNavegador);
-    } catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Mensa de erro não encontrada: " + e.getMessage());
             throw e;
         }
     }
-    
+
     @Test
     @Order(3)
     public void CT23_03_TentativaEdicaoSemPercentual() {
@@ -225,27 +223,27 @@ public class RFVinteETres {
         // Limpando o campo Percentual
         WebElement labelPercEdicao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
         WebElement inputPercEdicao = driver.findElement(By.id(labelPercEdicao.getAttribute("for")));
-        
+
         // Limpeza robusta via teclado
         String selectAll = org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a");
         inputPercEdicao.sendKeys(selectAll);
         inputPercEdicao.sendKeys(org.openqa.selenium.Keys.DELETE);
-        
+
         System.out.println("Campo percentual limpo.");
-        
+
         WebElement botaoAtualizar;
         botaoAtualizar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Atualizar Avaliação')]")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAtualizar);
         botaoAtualizar.click();
         System.out.println("Botão 'Atualizar Avaliação' clicado.");
-        
+
         try {
             String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputPercEdicao);
             System.out.println("Mensagem capturada: " + mensagemNavegador);
 
             boolean contemMensagem = mensagemNavegador.contains("Preencha este campo");
             assertTrue(contemMensagem, " O campo Percentual aceitou ficar vazio na edição! Mensagem: " + mensagemNavegador);
-            
+
             System.out.println("Sucesso no CT23.03");
 
         } catch (Exception e) {
@@ -253,7 +251,144 @@ public class RFVinteETres {
             throw e;
         }
     }
-    
+
+    @Test
+    @Order(4)
+    public void CT23_04_TentativaEdicaoSomaMaiorQue100() {
+        criarCurso();
+
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        WebElement labelNome = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        driver.findElement(By.id(labelNome.getAttribute("for"))).sendKeys("Prova 1");
+
+        WebElement labelPerc = driver.findElement(By.xpath("//label[contains(text(), 'Percentual')]"));
+        WebElement inputPerc = driver.findElement(By.id(labelPerc.getAttribute("for")));
+        inputPerc.clear();
+        inputPerc.sendKeys("40");
+
+        System.out.println("Prova 1 adicionada com sucesso!");
+
+        WebElement botaoAdicionar = driver.findElement(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]"));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        labelNome = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        driver.findElement(By.id(labelNome.getAttribute("for"))).sendKeys("Prova 2");
+
+        labelPerc = driver.findElement(By.xpath("//label[contains(text(), 'Percentual')]"));
+        inputPerc = driver.findElement(By.id(labelPerc.getAttribute("for")));
+        inputPerc.clear();
+        inputPerc.sendKeys("60");
+
+        botaoAdicionar = driver.findElement(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]"));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Prova 2 adicionada com sucesso!");
+
+        // Garante que a avaliação apareceu antes de tentar editar
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(text(), 'Prova 2')]")));
+
+        WebElement botaoEditar = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(text(), 'Prova 2')]/ancestor::tr//button[descendant::*[contains(@data-testid, 'Edit')]]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoEditar);
+        js.executeScript("arguments[0].click();", botaoEditar);
+        System.out.println("Clicou no botão de editar.");
+
+        WebElement labelPercEdicao = driver.findElement(By.xpath("//label[contains(text(), 'Percentual')]"));
+        WebElement inputPercEdicao = driver.findElement(By.id(labelPercEdicao.getAttribute("for")));
+
+        String selectAll = org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a");
+        inputPercEdicao.sendKeys(selectAll);
+        inputPercEdicao.sendKeys(org.openqa.selenium.Keys.DELETE);
+        inputPercEdicao.sendKeys("80");
+
+        System.out.println("Percentagem da prova 2 alterada para 80");
+
+        WebElement botaoAtualizar;
+        botaoAtualizar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Atualizar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAtualizar);
+        botaoAtualizar.click();
+        System.out.println("Botão 'Atualizar Avaliação' clicado.");
+
+        try {
+            WebElement alertaErro = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MuiAlert-message")));
+            String textoAlerta = alertaErro.getText();
+            System.out.println("Alerta encontrado: " + textoAlerta);
+            boolean contemMensagem = textoAlerta.contains("excede 100%");
+            assertTrue(contemMensagem, "Erro: O texto do alerta não corresponde. Texto atual: " + textoAlerta);
+        } catch (Exception e) {
+            System.out.println("Falha na exibição do alerta: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Test
+    @Order(5)
+    public void CT23_05_TentativaEdicaoPercentualMaiorQue100() {
+        criarCurso();
+
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        WebElement labelNome = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        driver.findElement(By.id(labelNome.getAttribute("for"))).sendKeys("Prova 1");
+
+        WebElement labelPerc = driver.findElement(By.xpath("//label[contains(text(), 'Percentual')]"));
+        WebElement inputPerc = driver.findElement(By.id(labelPerc.getAttribute("for")));
+        inputPerc.clear();
+        inputPerc.sendKeys("40");
+
+        WebElement botaoAdicionar = driver.findElement(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]"));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        // Garante que a avaliação apareceu antes de tentar editar
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(text(), 'Prova 1')]")));
+
+        WebElement botaoEditar = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(text(), 'Prova 1')]/ancestor::tr//button[descendant::*[contains(@data-testid, 'Edit')]]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoEditar);
+        js.executeScript("arguments[0].click();", botaoEditar);
+        System.out.println("Clicou no botão de editar.");
+
+        WebElement labelPercEdicao = driver.findElement(By.xpath("//label[contains(text(), 'Percentual')]"));
+        WebElement inputPercEdicao = driver.findElement(By.id(labelPercEdicao.getAttribute("for")));
+
+        String selectAll = org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a");
+        inputPercEdicao.sendKeys(selectAll);
+        inputPercEdicao.sendKeys(org.openqa.selenium.Keys.DELETE);
+        inputPercEdicao.sendKeys("101");
+
+        System.out.println("Tentativa da percentagem da prova 1 alterada para 101");
+
+        WebElement botaoAtualizar;
+        botaoAtualizar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Atualizar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAtualizar);
+        botaoAtualizar.click();
+        System.out.println("Botão 'Atualizar Avaliação' clicado.");
+
+        try {
+            String mensagemNavegador = (String) js.executeScript("return arguments[0].validationMessage;", inputPercEdicao);
+            System.out.println("Mensagem capturada: " + mensagemNavegador);
+
+            boolean contemErroLimite = mensagemNavegador.contains("menor ou igual a 100");
+
+            assertTrue(contemErroLimite, "Erro: O sistema não validou o limite máximo na edição, mensagem atual: " + mensagemNavegador);
+
+            System.out.println("CT-23.05 passou");
+
+        } catch (Exception e) {
+            System.out.println("Falha no CT-23.05: " + e.getMessage());
+            throw e;
+        }
+
+    }
+
     //-----------Métodos Auxiliares-----------------------------------------
     /**
      * Módulo que executa o roteiro de criação de curso

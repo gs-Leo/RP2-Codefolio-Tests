@@ -69,13 +69,12 @@ public class RFVinteEDois {
     @AfterEach
     public void teardown() {
         if (driver != null) {
-            // driver.quit();
+            driver.quit();
         }
     }
 
     @Test
     @Order(1)
-    @Disabled
     public void CT22_01_CadastroAvaliacaoSucesso() {
         criarCurso();
 
@@ -131,7 +130,6 @@ public class RFVinteEDois {
 
     @Test
     @Order(2)
-    @Disabled
     public void CT22_02_TentativaCadastroSemNome() {
         criarCurso();
 
@@ -181,7 +179,6 @@ public class RFVinteEDois {
 
     @Test
     @Order(3)
-    @Disabled
     public void CT22_03_TentativaCadastroSemPercentual() {
         criarCurso();
 
@@ -231,7 +228,6 @@ public class RFVinteEDois {
 
     @Test
     @Order(4)
-    @Disabled
     public void CT22_04_TentativaCadastroPercentualNaoNumerico() {
         criarCurso();
 
@@ -290,7 +286,6 @@ public class RFVinteEDois {
 
     @Test
     @Order(5)
-    @Disabled
     public void CT22_05_TentativaCadastroPercentualMaiorQue100() {
         criarCurso();
 

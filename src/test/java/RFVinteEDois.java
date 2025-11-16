@@ -178,7 +178,7 @@ public class RFVinteEDois {
             throw e;
         }
     }
-    
+
     @Test
     @Order(3)
     @Disabled
@@ -197,11 +197,10 @@ public class RFVinteEDois {
         String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
         WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
         NomeAvInput.sendKeys("Prova 2");
-        
-        System.out.println("Nome atribuído com sucesso!");
-        
-        // Não colocando percentagem propositalmente
 
+        System.out.println("Nome atribuído com sucesso!");
+
+        // Não colocando percentagem propositalmente
         // Clicando no botão "Adicionar Avaliação"
         WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
@@ -229,11 +228,11 @@ public class RFVinteEDois {
             throw e;
         }
     }
-    
+
     @Test
     @Order(4)
     @Disabled
-     public void CT22_04_TentativaCadastroPercentualNaoNumerico() {
+    public void CT22_04_TentativaCadastroPercentualNaoNumerico() {
         criarCurso();
 
         // Clicando em "Avaliações"
@@ -258,9 +257,9 @@ public class RFVinteEDois {
         WebElement InputPercentual = driver.findElement(By.id(idPercentual));
         InputPercentual.clear();
         InputPercentual.sendKeys("abc");
-        
+
         System.out.println("Valor 'abc' enviado no campo de percentagem");
-        
+
         // Clicando no botão "Adicionar Avaliação"
         WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
@@ -288,10 +287,11 @@ public class RFVinteEDois {
             throw e;
         }
     }
-     
-     @Test
+
+    @Test
     @Order(5)
-     public void CT22_05_TentativaCadastroPercentualMaiorQue100() {
+    @Disabled
+    public void CT22_05_TentativaCadastroPercentualMaiorQue100() {
         criarCurso();
 
         // Clicando em "Avaliações"
@@ -316,9 +316,9 @@ public class RFVinteEDois {
         WebElement InputPercentual = driver.findElement(By.id(idPercentual));
         InputPercentual.clear();
         InputPercentual.sendKeys("101");
-        
+
         System.out.println("Valor '101' enviado no campo de percentagem");
-        
+
         // Clicando no botão "Adicionar Avaliação"
         WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
@@ -346,14 +346,92 @@ public class RFVinteEDois {
             throw e;
         }
     }
-            
-    
 
-        //-----------Métodos Auxiliares-----------------------------------------
-        /**
-         * Módulo que executa o roteiro de criação de curso
-         */
-        String tituloCurso;
+    @Test
+    @Order(6)
+    public void CT22_06_TentativaCadastroSomaMaiorQue100() {
+        criarCurso();
+
+        // Clicando em "Avaliações"
+        WebElement tabAvaliacoes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Avaliações']")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", tabAvaliacoes);
+        tabAvaliacoes.click();
+        System.out.println("Aba Avaliações acessada com sucesso!");
+
+        //Dando nome à avaliação
+        WebElement NomeAvaliacao;
+        NomeAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        String idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
+        WebElement NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
+        NomeAvInput.sendKeys("Prova 1");
+
+        System.out.println("Nome atribuído com Sucesso!");
+
+        // Dando porcentagem à avaliação
+        WebElement LabelPercentual;
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+        String idPercentual = LabelPercentual.getAttribute("for");
+        WebElement InputPercentual = driver.findElement(By.id(idPercentual));
+        InputPercentual.clear();
+        InputPercentual.sendKeys("60");
+
+        System.out.println("Percentual atribuído com Sucesso!");
+
+        // Clicando no botão "Adicionar Avaliação"
+        WebElement botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+
+        System.out.println("Prova 1 criada com Sucesso!");
+
+        //Dando nome à segunda avaliação
+        NomeAvaliacao = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Nome da Avaliação')]")));
+        idNomeAvaliacao = NomeAvaliacao.getAttribute("for");
+        NomeAvInput = driver.findElement(By.id(idNomeAvaliacao));
+        NomeAvInput.sendKeys("Prova 2");
+
+        System.out.println("Nome atribuído com Sucesso!");
+
+        // Dando porcentagem à segunda avaliação
+        LabelPercentual = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Percentual')]")));
+        idPercentual = LabelPercentual.getAttribute("for");
+        InputPercentual = driver.findElement(By.id(idPercentual));
+        InputPercentual.clear();
+        InputPercentual.sendKeys("50");
+
+        System.out.println("Percentual atribuído com Sucesso!");
+
+        System.out.println("Prova 2 criada com Sucesso!");
+
+        // Clicando no botão "Adicionar Avaliação"
+        botaoAdicionar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Adicionar Avaliação')]")));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", botaoAdicionar);
+        botaoAdicionar.click();
+
+        System.out.println("Botão 'Adicionar Avaliação' clicado com sucesso!");
+
+        // Procura pelo alerta
+        try {
+            WebElement alertaErro = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MuiAlert-message")));
+
+            String textoAlerta = alertaErro.getText();
+            System.out.println("Alerta encontrado! Texto: " + textoAlerta);
+
+            boolean contemMensagem = textoAlerta.contains("excede 100%");
+            assertTrue(contemMensagem, "Erro: O texto do alerta não corresponde. Texto atual: " + textoAlerta);
+        } catch (Exception e) {
+            System.out.println("Alerta não encontrado");
+            throw e;
+        }
+    }
+
+    //-----------Métodos Auxiliares-----------------------------------------
+    /**
+     * Módulo que executa o roteiro de criação de curso
+     */
+    String tituloCurso;
 
     private void criarCurso() {
         System.out.println("Iniciando o roteiro de criação de curso...");

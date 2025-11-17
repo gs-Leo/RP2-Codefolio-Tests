@@ -8,7 +8,7 @@ import java.time.Duration;
 import org.openqa.selenium.interactions.Actions;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RF16 { // <-- Novo nome de classe
+public class RF16 {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -16,7 +16,6 @@ public class RF16 { // <-- Novo nome de classe
     private final String url = "https://testes.codefolio.com.br/";
     private JavascriptExecutor js;
 
-    // --- SEUS DADOS DE AUTENTICAÇÃO (COPIADOS DO RF15) ---
     private final String MINHA_FIREBASE_KEY = "firebase:authUser:AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg:[DEFAULT]";
     private final String MINHA_FIREBASE_VALUE = "{\n" +
             "  \"apiKey\": \"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\",\n" +
@@ -46,7 +45,6 @@ public class RF16 { // <-- Novo nome de classe
             "  },\n" +
             "  \"uid\": \"qWa4JqPwRPbZoGBJh69I5gfG3g32\"\n" +
             "}";
-    // -----------------------------------------------------
 
     @BeforeEach
     public void setup() {
@@ -91,6 +89,52 @@ public class RF16 { // <-- Novo nome de classe
                 )
         );
         linkGerenciarCursos.click();
+    }
+
+    @Test
+    public void excluirQuizComSucesso() throws InterruptedException {
+
+        // 1-3. Navegação (Avatar -> Gerenciamento -> Curso -> QUIZ)
+        AcessarGerenciadorCurso();
+        WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
+        ));
+        btnGerenciarCurso.click();
+        WebElement abaQuiz = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[normalize-space(.)='Quiz']")
+        ));
+        abaQuiz.click();
+
+        // 4. Clicar no ícone de Lixeira (🗑️) do *primeiro quiz*
+        // (Baseado na sua foto image_1c9ba6.png, o primeiro DeleteIcon é o do Quiz)
+        System.out.println("Procurando o ícone de Lixeira DO QUIZ (o primeiro)...");
+
+        WebElement btnLixeiraQuiz = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[ .//*[contains(@data-testid, 'DeleteIcon')] ])[1]")
+        ));
+        btnLixeiraQuiz.click();
+
+        // 5. Confirmar a exclusão no Modal
+        System.out.println("Procurando botão de confirmação 'Sim, Excluir'...");
+        // (Chute: o texto do botão de confirmação)
+        WebElement btnConfirmarExcluir = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[normalize-space(.)='Sim, Excluir']")
+        ));
+        btnConfirmarExcluir.click();
+
+        // 6. Verificação Final (Assert)
+        System.out.println("Verificando sucesso (procurando o pop-up verde)...");
+
+        // (Chute: O texto do pop-up de exclusão)
+        WebElement popupSucesso = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[normalize-space(.)='Quiz deletado com sucesso!']")
+        ));
+
+        assertNotNull(popupSucesso, "O pop-up de sucesso da EXCLUSÃO do Quiz não foi encontrado!");
+
+        System.out.println("*************************************************");
+        System.out.println("SUCESSO: QUIZ INTEIRO excluído e pop-up verificado!");
+        System.out.println("*************************************************");
     }
 
     @Test

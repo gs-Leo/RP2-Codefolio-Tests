@@ -5,8 +5,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+import org.openqa.selenium.Keys;
 
 public class RF15 {
 
@@ -16,10 +16,7 @@ public class RF15 {
     private final String url = "https://testes.codefolio.com.br/";
     private JavascriptExecutor js;
 
-    // --- SEUS DADOS DE AUTENTICAÇÃO (JÁ FORMATADOS) ---
     private final String MINHA_FIREBASE_KEY = "firebase:authUser:AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg:[DEFAULT]";
-
-    // Formatei os dados que você me mandou para o formato JSON Java:
     private final String MINHA_FIREBASE_VALUE = "{\n" +
             "  \"apiKey\": \"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\",\n" +
             "  \"appName\": \"[DEFAULT]\",\n" +
@@ -48,7 +45,6 @@ public class RF15 {
             "  },\n" +
             "  \"uid\": \"qWa4JqPwRPbZoGBJh69I5gfG3g32\"\n" +
             "}";
-    // -----------------------------------------------------
 
     @BeforeEach
     public void setup() {
@@ -58,10 +54,7 @@ public class RF15 {
         wait = new WebDriverWait(driver, timeout);
         js = (JavascriptExecutor) driver;
 
-        // 1. Acessa a página (deslogado)
         driver.get(url);
-
-        // 2. Injeta o token de autenticação
         System.out.println("Injetando token de login...");
         try {
             js.executeScript("window.localStorage.setItem(arguments[0], arguments[1]);",
@@ -70,8 +63,6 @@ public class RF15 {
         } catch (Exception e) {
             throw new RuntimeException("Erro ao injetar token: " + e.getMessage());
         }
-
-        // 3. Recarrega a página (O site vai ler o token e logar sozinho)
         System.out.println("Recarregando página para aplicar login...");
         driver.navigate().refresh();
     }
@@ -79,41 +70,23 @@ public class RF15 {
     @AfterEach
     public void tearDown() {
         if (driver != null) {
-            // driver.quit(); // Comentei para você ver o resultado
+            System.out.println("A fechar o navegador.");
+            driver.quit();
         }
     }
 
-    private boolean existemCursos(int timeoutEmSegundos) {
-        WebDriverWait waitCurto = new WebDriverWait(driver, Duration.ofSeconds(timeoutEmSegundos));
-
-        System.out.println("Verifica se existem cursos (à espera de um 'h6')...");
-        try {
-            waitCurto.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.tagName("h6")
-                    )
-            );
-            System.out.println("Verificação: Cursos encontrados.");
-            return true;
-        } catch (TimeoutException e) {
-            System.out.println("Verificação: Nenhum curso encontrado (Timeout).");
-            return false;
-        }
-    }
-    public void AcessarGerenciadorCurso() throws InterruptedException {
-        System.out.println("Iniciando o teste...");
+    // Método auxiliar para navegar até a página de gerenciamento de cursos
+    public void AcessarGerenciadorCurso() {
+        System.out.println("Acessando o Gerenciador de Cursos...");
 
         WebElement menuPrincipal = wait.until(
                 ExpectedConditions.presenceOfElementLocated(
-                        // Voltamos a procurar o <button>
                         By.xpath("//button[@aria-label='Configurações da Conta']")
                 )
         );
-        Thread.sleep(3000);
-
         js.executeScript("arguments[0].click();", menuPrincipal);
-        Thread.sleep(3000);
 
+        // Espera o link "Gerenciamento de Cursos" aparecer
         WebElement linkGerenciarCursos = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.xpath("//li[contains(., 'Gerenciamento de Cursos')]")
@@ -122,63 +95,161 @@ public class RF15 {
         linkGerenciarCursos.click();
     }
 
+
     @Test
     public void editarQuizComSucesso() throws InterruptedException {
 
-       AcessarGerenciadorCurso();
-
-        System.out.println("Clicando em Gerenciamento de Cursos...");
-        WebElement linkGerenciar = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[contains(text(), 'Gerenciamento de Cursos')]") // Texto exato do menu
-        ));
-        linkGerenciar.click();
-
-        // 3. Clicar em "Gerenciar Curso" (Baseado na foto image_bba87b.png)
-        System.out.println("Clicando no botão roxo 'Gerenciar Curso'...");
-        // Procura o botão roxo específico. Usamos o texto para garantir.
+        AcessarGerenciadorCurso();
         WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[contains(text(), 'Gerenciar Curso')]")
+                By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
         ));
         btnGerenciarCurso.click();
-
-        // 4. Clicar na aba "QUIZ" (Baseado na foto image_bba8d7.png)
-        System.out.println("Clicando na aba QUIZ...");
-        // As abas são botões de texto. Procuramos o que diz "QUIZ".
         WebElement abaQuiz = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[contains(text(), 'QUIZ')]")
+                By.xpath("//button[normalize-space(.)='Quiz']")
         ));
         abaQuiz.click();
+        WebElement btnDropdown = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[ .//*[contains(@data-testid, 'ExpandMoreIcon')] ]")
+        ));
+        btnDropdown.click();
+        Thread.sleep(1000);
 
-        // 5. Clicar no Lápis de Editar (Baseado na foto image_bba915.png)
-        // A foto mostra ícones de lápis e lixeira. O lápis é o de editar.
-        System.out.println("Procurando o ícone de lápis (Editar)...");
-
-        // Este seletor procura um botão que tenha um ícone SVG de edição (path data-testid="EditIcon")
-        // OU, se for mais simples, pegamos o primeiro botão da lista de ações.
+        System.out.println("Procurando o ícone de lápis DA PERGUNTA (o segundo)...");
         WebElement btnEditar = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("(//button[ .//*[contains(@data-testid, 'Edit')] ])[1]")
+                By.xpath("(//button[ .//*[contains(@data-testid, 'EditIcon')] ])[2]")
         ));
         btnEditar.click();
 
-        // --- AQUI COMEÇA A EDIÇÃO (Ajuste conforme o formulário de Quiz) ---
-        System.out.println("Editando o Quiz...");
+        System.out.println("Formulário de 'Editar Questão' (real) encontrado! Preenchendo...");
+        String xPathPergunta = "//input[@id=(//label[text()='Pergunta']/attribute::for)]";
+        String xPathOpcao1 = "//input[@id=(//label[text()='Opção 1']/attribute::for)]";
+        String xPathOpcao2 = "//input[@id=(//label[text()='Opção 2']/attribute::for)]";
 
-        // Exemplo: Alterar o título do Quiz (Se houver um campo título)
-        WebElement campoTitulo = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@type='text']")));
-        campoTitulo.clear();
-        campoTitulo.sendKeys("Quiz Editado Automaticamente");
+        String xPathBtnSalvar = "//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'salvar edição')]";
 
-        // 6. Salvar (Procura botão Salvar ou Atualizar)
-        System.out.println("Salvando...");
-        driver.findElement(By.xpath("//button[contains(text(), 'Salvar') or contains(text(), 'Atualizar')]")).click();
+        String textoEditado = "PERGUNTA REALMENTE EDITADA - RF15";
 
-        // 7. Verificação Final
-        System.out.println("Verificando sucesso...");
-        Thread.sleep(2000);
-        WebElement tituloNaTela = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[contains(text(), 'Quiz Editado Automaticamente')]")
+        WebElement campoPergunta = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPathPergunta)));
+
+        campoPergunta.clear();
+        campoPergunta.sendKeys(textoEditado);
+
+        WebElement campoOpcao1 = driver.findElement(By.xpath(xPathOpcao1));
+        campoOpcao1.clear();
+        campoOpcao1.sendKeys("Opção Editada 1");
+
+        WebElement campoOpcao2 = driver.findElement(By.xpath(xPathOpcao2));
+        campoOpcao2.clear();
+        campoOpcao2.sendKeys("Opção Editada 2");
+
+        // 7. Salvar a Edição
+        System.out.println("Salvando a QUESTÃO EDITADA...");
+        driver.findElement(By.xpath(xPathBtnSalvar)).click();
+
+        // 8. Verificação Final (Assert)
+        System.out.println("Verificando sucesso (procurando o pop-up verde)...");
+        WebElement popupSucesso = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[normalize-space(.)='Questão atualizada com sucesso!']")
         ));
 
-        System.out.println("SUCESSO: Quiz editado e encontrado na lista!");
+        assertNotNull(popupSucesso, "O pop-up de sucesso da EDIÇÃO não foi encontrado!");
+
+        System.out.println("*************************************************");
+        System.out.println("SUCESSO: Questão EDITADA e pop-up verificado!");
+        System.out.println("*************************************************");
     }
+
+    @Test
+    public void cancelarEdicaoQuestao() throws InterruptedException {
+
+        AcessarGerenciadorCurso();
+        WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
+        ));
+        btnGerenciarCurso.click();
+        WebElement abaQuiz = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[normalize-space(.)='Quiz']")
+        ));
+        abaQuiz.click();
+        WebElement btnDropdown = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[ .//*[contains(@data-testid, 'ExpandMoreIcon')] ]")
+        ));
+        btnDropdown.click();
+        Thread.sleep(1000);
+
+        System.out.println("Procurando o ícone de lápis DA PERGUNTA (o segundo)...");
+        WebElement btnEditar = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[ .//*[contains(@data-testid, 'EditIcon')] ])[2]")
+        ));
+        btnEditar.click();
+
+        System.out.println("Formulário de 'Editar Questão' encontrado! Clicando em CANCELAR...");
+
+        String xPathBtnCancelar = "//button[normalize-space(.)='Cancelar']"; // Corrigido para "Cancelar"
+
+        WebElement btnCancelar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xPathBtnCancelar)));
+        btnCancelar.click();
+
+        System.out.println("Verificando sucesso (procurando o botão 'Adicionar Questão')...");
+
+        WebElement btnAdicionar = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//button[normalize-space(.)='Adicionar Questão']")
+        ));
+
+        assertNotNull(btnAdicionar, "O botão 'Adicionar Questão' não foi encontrado. O teste falhou em retornar.");
+
+        System.out.println("*************************************************");
+        System.out.println("SUCESSO: Edição CANCELADA e teste retornou à tela de lista!");
+        System.out.println("*************************************************");
+    }
+    @Test
+    public void validarEdicaoPerguntaVazia() throws InterruptedException {
+
+        AcessarGerenciadorCurso();
+        WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
+        ));
+        btnGerenciarCurso.click();
+        WebElement abaQuiz = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[normalize-space(.)='Quiz']")
+        ));
+        abaQuiz.click();
+        WebElement btnDropdown = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[ .//*[contains(@data-testid, 'ExpandMoreIcon')] ]")
+        ));
+        btnDropdown.click();
+        Thread.sleep(1000);
+        WebElement btnEditar = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[ .//*[contains(@data-testid, 'EditIcon')] ])[2]")
+        ));
+        btnEditar.click();
+
+        System.out.println("Formulário de 'Editar Questão' encontrado! Limpando campo 'Pergunta'...");
+        String xPathPergunta = "//input[@id=(//label[text()='Pergunta']/attribute::for)]";
+        WebElement campoPergunta = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPathPergunta)));
+        campoPergunta.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
+
+        String xPathBtnSalvar = "//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'salvar edição')]";
+        System.out.println("Tentando salvar com campo vazio...");
+        driver.findElement(By.xpath(xPathBtnSalvar)).click();
+
+        System.out.println("Verificando pop-up de erro de validação...");
+
+        WebElement popupContainer = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[contains(@class, 'Toastify__toast--error')]")
+        ));
+
+        String textoDoPopup = popupContainer.getText();
+
+        assertTrue(textoDoPopup.contains("A pergunta não pode estar vazia"),
+                "O texto do pop-up de erro não era o esperado. Texto encontrado: " + textoDoPopup);
+
+        assertNotNull(popupContainer, "O pop-up de erro para campo vazio não foi encontrado!");
+
+        System.out.println("*************************************************");
+        System.out.println("SUCESSO: Pop-up de validação de campo vazio verificado!");
+        System.out.println("*************************************************");
+    }
+
+
 }

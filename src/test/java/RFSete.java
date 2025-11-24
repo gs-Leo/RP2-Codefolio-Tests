@@ -8,44 +8,44 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class RF7 {
+public class RFSete {
 
     private WebDriver driver;
     private WebDriverWait wait;
     private final Duration timeout = Duration.ofSeconds(15);
-    private final String url = "https://testes.codefolio.com.br/";
+    private final String url = "https://testes-codefolio.web.app/";
     private JavascriptExecutor js;
 
-    private final String Firebase_key = "firebase:authUser:AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg:[DEFAULT]";
+    private final String Firebase_key = "firebase:authUser:AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co:[DEFAULT]";
     private final String Firebase_value = "{\n" +
-            "    \"apiKey\": \"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\",\n" +
-            "    \"appName\": \"[DEFAULT]\",\n" +
-            "    \"createdAt\": \"1762283223425\",\n" +
-            "    \"displayName\": \"Leonardo Goncalves da Silva\",\n" +
-            "    \"email\": \"leonardogds3.aluno@unipampa.edu.br\",\n" +
-            "    \"emailVerified\": true,\n" +
-            "    \"isAnonymous\": false,\n" +
-            "    \"lastLoginAt\": \"1762634614405\",\n" +
-            "    \"phoneNumber\": null,\n" +
-            "    \"photoURL\": \"https://lh3.googleusercontent.com/a/ACg8ocJtq2riy2OXHPvzGKsR53P9afkDHBYcvM-S2MJVePCLhZq_CFo=s96-c\",\n" +
-            "    \"providerData\": [\n" +
-            "      {\n" +
-            "        \"providerId\": \"google.com\",\n" +
-            "        \"uid\": \"116005034032912262657\",\n" +
-            "        \"displayName\": \"Leonardo Goncalves da Silva\",\n" +
-            "        \"email\": \"leonardogds3.aluno@unipampa.edu.br\",\n" +
-            "        \"phoneNumber\": null\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"stsTokenManager\": {\n" +
-            "      \"accessToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjU0NTEzMjA5OWFkNmJmNjEzODJiNmI0Y2RlOWEyZGZlZDhjYjMwZjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTGVvbmFyZG8gR29uY2FsdmVzIGRhIFNpbHZhIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0p0cTJyaXkyT1hIUHZ6R0tzUjUzUDlhZmtESEJZY3ZNLVMyTUpWZVBDTGhacV9DRm89czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVhY3QtbmEtcHJhdGljYSIsImF1ZCI6InJlYWN0LW5hLXByYXRpY2EiLCJhdXRoX3RpbWUiOjE3NjI2MzQ2MTQsInVzZXJfaWQiOiJiTm9ZVHNoNUdjYnFOYlNGVE1XNDkyc0ZmbjEyIiwic3ViIjoiYk5vWVRzaDVHY2JxTmJTRlRNVzQ5MnNGZm4xMiIsImlhdCI6MTc2MjYzNDYxNCwiZXhwIjoxNzYyNjM4MjE0LCJlbWFpbCI6Imxlb25hcmRvZ2RzMy5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjExNjAwNTAzNDAzMjkxMjI2MjY1NyJdLCJlbWFpbCI6WyJsZW9uYXJkb2dkczMuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.X3SIJP91z5Obi0HKvP0WOKsbn8GpblUuU6ugPElX1Qbw2TLc64QuBix_98RpB6BTlXdNcvn2FTf82gZAD9n2I238PaJTDpzHOIBOWOlXDr8DAVA5iTj_TlO9eV0-InKclHehXN5YQA4hjxJOjFfIcuZtL4JsyHvdu12STYX2kdyvjapeNXKM71QwxUkzFL8-z9i5wLuYmJyA9jmaIwG2yrU_TLVk0ZIemCrpKwFVeLW5s9txAME1XgQEy_0YL5XyJuwFNYx8Yu5RZ4OTU1bbAOmp3RJ9CtlHYazxLODMvvwd8KwV4OA7N8VJ5yJp0yAga1Y1udioCrjovyWBIME_rQ\",\n" +
-            "      \"expirationTime\": 1762638214857,\n" +
-            "      \"refreshToken\": \"AMf-vBxxY5IxETzyATq-YbVMzVS94saun9dMf80DIuAG07H1ONoKHQjeUH0v4l1gBWGnQqrt2Nj--ir8QSTivP3XKA3TuBcyIU1gMy_H8S5qRmlQFL7-3fIbgtXWTQ8_EtdOtUdDLPt1TV30sbiXkm5gC1myihDAntEeUx3NJQS4kYthEy63ip67R6udegkgD_xpzop3N3or5uc-bz_c_PZ-2qcsWeiWTV7EwNQe4Uk7Noh6HXQiqOCLUsD40APvj7uA8-z5fox_4enjI9Ls5qdx_EzvnpAnTNabSVdZE3DdFj9GKckz1Ta34ylhUed-IXBUYpAMM46kNIFgU0RNRGokUD-QNYfgOplCBhnNkwkEI9Xr2KX5azoh0KUxtjGHpRPFrD-YQNigVWew506HkuWpROwyxOqpgaRGU7DG4UY4pCZh_4ZuEeHPxpuKigJs8IumKGLSORQgipnGKV5iLmO-KUyATUjLFw\",\n" +
-            "      \"tenantId\": null\n" +
-            "    },\n" +
-            "    \"uid\": \"bNoYTsh5GcbqNbSFTMW492sFfn12\",\n" +
-            "    \"_redirectEventId\": null\n" +
-            "  }";
+            "  \"apiKey\": \"AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co\",\n" +
+            "  \"appName\": \"[DEFAULT]\",\n" +
+            "  \"createdAt\": \"1763679183776\",\n" +
+            "  \"displayName\": \"Leonardo Goncalves da Silva\",\n" +
+            "  \"email\": \"leonardogds3.aluno@unipampa.edu.br\",\n" +
+            "  \"emailVerified\": true,\n" +
+            "  \"isAnonymous\": false,\n" +
+            "  \"lastLoginAt\": \"1763752523565\",\n" +
+            "  \"phoneNumber\": null,\n" +
+            "  \"photoURL\": \"https://lh3.googleusercontent.com/a/ACg8ocJtq2riy2OXHPvzGKsR53P9afkDHBYcvM-S2MJVePCLhZq_CFo=s96-c\",\n" +
+            "  \"providerData\": [\n" +
+            "    {\n" +
+            "      \"providerId\": \"google.com\",\n" +
+            "      \"uid\": \"116005034032912262657\",\n" +
+            "      \"displayName\": \"Leonardo Goncalves da Silva\",\n" +
+            "      \"email\": \"leonardogds3.aluno@unipampa.edu.br\",\n" +
+            "      \"phoneNumber\": null\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"stsTokenManager\": {\n" +
+            "    \"accessToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTGVvbmFyZG8gR29uY2FsdmVzIGRhIFNpbHZhIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0p0cTJyaXkyT1hIUHZ6R0tzUjUzUDlhZmtESEJZY3ZNLVMyTUpWZVBDTGhacV9DRm89czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGVzdGVzLWNvZGVmb2xpbyIsImF1ZCI6InRlc3Rlcy1jb2RlZm9saW8iLCJhdXRoX3RpbWUiOjE3NjM3NTI1MjMsInVzZXJfaWQiOiJzVTVhWmRQMDRGV0xKTGFvb2hrYm1icXhqUnMxIiwic3ViIjoic1U1YVpkUDA0RldMSkxhb29oa2JtYnF4alJzMSIsImlhdCI6MTc2Mzc1MjUyMywiZXhwIjoxNzYzNzU2MTIzLCJlbWFpbCI6Imxlb25hcmRvZ2RzMy5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjExNjAwNTAzNDAzMjkxMjI2MjY1NyJdLCJlbWFpbCI6WyJsZW9uYXJkb2dkczMuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.Iu36YgwatHl2gQUu77ZEUrhok_k0ZvYOF9Tlpkws-zmV79HiYwyriyLURDbFpz5tVORcoLbz6qIoLOq0K2D0yKmifLfnWNeapHkvqosKXlSOXbPtJcmHTnREZB12DM5KGfasioNsz-4HTIvy9eOM4NtgbQ8SBJQHeh9uHTtb90PVGys-w19E8_hAsU0fFQbMvkFGdHT5usCGwLQ56VJ2OHg_BbYp6nPxfgaUb6mqoGd6cZJID5S0wK0mBPUBTI93rc5WxD6mC70PnPX-racR2847QKfGhRs5s3rTV7A263DoVTjKdB3n2d53CkNpRDx_c939COksD36tle3gqma7KQ\",\n" +
+            "    \"expirationTime\": 1763756123890,\n" +
+            "    \"refreshToken\": \"AMf-vBzcZDX5l8fauOifGjU0Bm49py-TwAFLSeiDLOLv24oz17PA9yU6OMpb2JNhey7qskNNw5HyNHtTS8w2tG09HszjFJW1mdcZP-KIC_R4nyHQANKjNcmX0Dtuib_x9Ycrq7pUwhMqlaGlB5Ih0X0DCfdtGl-hpfCZd60S4GdLJ_tNRx6edEmRoIirA-NrD3Bh0RrbzSBW6gabIbDldFMeewqALcBLj-SWNX_quyBeVSyCM_nfY81c23tEkCzViBaTCA0BFJhToFVnn4mXdgnoTXYK8OIr89IAloNxhxHK3Qplm3U0wv3NukXQ8QxMFc8vLhjbb_SsOL1GCzZCgjgb7-If_oZekmHJ-oYBmU1iYUQRWWRoFYd8zVj2Y1sp3jC3xjlRh_843cYTmY2Uv04d8RXdg4Qiu-v8zWOM0FUERUo9ZELtxpAZKFWT8Ty9JmvA2xLl3cF2kVR_kTMxfLuPRXzTu5M6bA\"\n" +
+            "  },\n" +
+            "  \"tenantId\": null,\n" +
+            "  \"uid\": \"sU5aZdP04FWLJLaoohkbmbqxjRs1\",\n" +
+            "  \"_redirectEventId\": null\n" +
+            "}";
 
     @BeforeEach
     public void setup() throws InterruptedException {

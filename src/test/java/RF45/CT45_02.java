@@ -16,7 +16,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class CT45_02 {
-
     private WebDriver driver;
     private WebDriverWait wait;
     private final Duration timeout = Duration.ofSeconds(15);
@@ -24,42 +23,8 @@ public class CT45_02 {
     private JavascriptExecutor js;
 
     private final String Firebase_key = "firebase:authUser:AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co:[DEFAULT]";
-    private final String Firebase_value = "{\n" +
-            "  \"fbase_key\": \"firebase:authUser:AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co:[DEFAULT]\",\n" +
-            "  \"value\": {\n" +
-            "    \"apiKey\": \"AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co\",\n" +
-            "    \"appName\": \"[DEFAULT]\",\n" +
-            "    \"createdAt\": \"1763485802422\",\n" +
-            "    \"displayName\": \"Marcus Vinicius Morini Querol Junior\",\n" +
-            "    \"email\": \"marcusquerol.aluno@unipampa.edu.br\",\n" +
-            "    \"emailVerified\": true,\n" +
-            "    \"isAnonymous\": false,\n" +
-            "    \"lastLoginAt\": \"1764000250329\",\n" +
-            "    \"phoneNumber\": null,\n" +
-            "    \"photoURL\": \"https://lh3.googleusercontent.com/a/ACg8ocIPSVJF5ZjtLwj6MndKM7i1yp2tDbMn13DkkmLcptbfW7FRQ74=s96-c\",\n" +
-            "    \"providerData\": [\n" +
-            "      {\n" +
-            "        \"providerId\": \"google.com\",\n" +
-            "        \"uid\": \"107226265685191574291\",\n" +
-            "        \"displayName\": \"Marcus Vinicius Morini Querol Junior\",\n" +
-            "        \"email\": \"marcusquerol.aluno@unipampa.edu.br\",\n" +
-            "        \"phoneNumber\": null\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"stsTokenManager\": {\n" +
-            "      \"accessToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWFyY3VzIFZpbmljaXVzIE1vcmluaSBRdWVyb2wgSnVuaW9yIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0lQU1ZKRjVaanRMd2o2TW5kS003aTF5cDJ0RGJNbjEzRGtrbUxjcHRiZlc3RlJRNzQ9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGVzdGVzLWNvZGVmb2xpbyIsImF1ZCI6InRlc3Rlcy1jb2RlZm9saW8iLCJhdXRoX3RpbWUiOjE3NjQwMDAyNTAsInVzZXJfaWQiOiJYdjBYNlllYTRIWEhpbkxNbUJhYTFqcURHeDYyIiwic3ViIjoiWHYwWDZZZWE0SFhIaW5MTW1CYWExanFER3g2MiIsImlhdCI6MTc2NDAwMDI1MCwiZXhwIjoxNzY0MDAzODUwLCJlbWFpbCI6Im1hcmN1c3F1ZXJvbC5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjEwNzIyNjI2NTY4NTE5MTU3NDI5MSJdLCJlbWFpbCI6WyJtYXJjdXNxdWVyb2wuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.xl0qtamf3HAW7oIk8lK69xsb9zQ0EawqQa7yMmwVBksfmWv4DE-wJt9E9mIpP9-thvTIrnw1o4QCtLiX6gqSqaSVbn2NexWNorFzl7GNmlCIwFWIuHPPt6NLdDeclVGZiNYs_5jYjD7xjzZqMPC6zkeDuT8TaWIF1E6g7mIdyx7dWO7-zA5asK7DV8lagAlMljhiP4N2q0hjJ5f7RGXwV5q1E5OkUmCp-iN7iyKH8YVwHAdJD8HWeWUYBoKp0QAlp2AhoTQs5HRc-4SZR4vYPyYl-oD9vYkkcWaMoC7Epp9GE037REZ1yD2ZutsVaqKmEil9dVgz52zJp_zbCQ_RrQ\",\n" +
-            "      \"expirationTime\": 1764003850688,\n" +
-            "      \"refreshToken\": \"AMf-vBxRZRi3NBAZMzXr-iFRTNTy2CN_JMwXUYL1bJa9I6Sz89ajSIkENs6DuJbBfwJQVOLoaJPuo5kofG3u8411UzVhm2Yxz-wloPMJxIA_QtMZTW0hfZRlgQEmJG3n7cWh_uZGKuZpF_Pe4uMvMrviPmGMlqLMwqaWXgAexpvVIIeJcJ4cPhKiri3yFV-Q1hJgBoUnGnEvgQ-wzP92OKlTeL7JfTrSzbXLb0aPrFZHZzvazkVDwnzCTS3AN8Ed454ORIoDjt-UqaRtRJMUu2O2orcW_kih0V4hOxCIPd9TN-RbC_go-o9ZXl0MxNBTBVNRdh-AhywG6cIAz5BKm2rtgS2oQPYQ2PPC2LyoEo0B5tAObULQt18dnUiULWZGCKUkowJdA91mQgTrbKcdvKxW2wfM9dhs9KKqjIykbnbJcP2SHPMC2bhfgffAwoETEcdKFVkaZq6P-fMmYnPFhzOLNqdgtYdGTSTFz14rGzwiHt6f4Tp3uGk\"\n" +
-            "    },\n" +
-            "    \"tenantId\": null,\n" +
-            "    \"uid\": \"Xv0X6Yea4HXHinLMmBaa1jqDGx62\",\n" +
-            "    \"_redirectEventId\": null\n" +
-            "  }\n" +
-            "}";
-
-    @BeforeEach
+    private final String Firebase_value = "{\"apiKey\":\"AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co\",\"appName\":\"[DEFAULT]\",\"createdAt\":\"1763485802422\",\"displayName\":\"Marcus Vinicius Morini Querol Junior\",\"email\":\"marcusquerol.aluno@unipampa.edu.br\",\"emailVerified\":true,\"isAnonymous\":false,\"lastLoginAt\":\"1764000250329\",\"phoneNumber\":null,\"photoURL\":\"https://lh3.googleusercontent.com/a/ACg8ocIPSVJF5ZjtLwj6MndKM7i1yp2tDbMn13DkkmLcptbfW7FRQ74=s96-c\",\"providerData\":[{\"providerId\":\"google.com\",\"uid\":\"107226265685191574291\",\"displayName\":\"Marcus Vinicius Morini Querol Junior\",\"email\":\"marcusquerol.aluno@unipampa.edu.br\",\"phoneNumber\":null}],\"stsTokenManager\":{\"accessToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWFyY3VzIFZpbmljaXVzIE1vcmluaSBRdWVyb2wgSnVuaW9yIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0lQU1ZKRjVaanRMd2o2TW5kS003aTF5cDJ0RGJNbjEzRGtrbUxjcHRiZlc3RlJRNzQ9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGVzdGVzLWNvZGVmb2xpbyIsImF1ZCI6InRlc3Rlcy1jb2RlZm9saW8iLCJhdXRoX3RpbWUiOjE3NjM5OTk2OTgsInVzZXJfaWQiOiJYdjBYNlllYTRIWEhpbkxNbUJhYTFqcURHeDYyIiwic3ViIjoiWHYwWDZZZWE0SFhIaW5MTW1CYWExanFER3g2MiIsImlhdCI6MTc2NDAxODA3OSwiZXhwIjoxNzY0MDIxNjc5LCJlbWFpbCI6Im1hcmN1c3F1ZXJvbC5hbHVub0B1bmlwYW1wYS5lZHUuYnIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjEwNzIyNjI2NTY4NTE5MTU3NDI5MSJdLCJlbWFpbCI6WyJtYXJjdXNxdWVyb2wuYWx1bm9AdW5pcGFtcGEuZWR1LmJyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.qPLELxK0C8vmd6FQL-e1Km3tjuvM9SqIAWy8pvCXUzAdCf5hxK65J3-1Bt8M0nZ80g4tOatsuqsyhlacFqAahkPIXRcrs4z2dm8P0vAwzibug-NVS-8FcVcRoKMIuxsJPrbU4lXkqRfAKmk5ZHZuqTBt1Vd6Px71LXg9ufByu_SMdWow3CLuUGk5buYSZRucbi4paRJuEMcCfdmCBF-PgOaR_8z4pCbXNZPUYARu-VOoZRPxro1Ny0y-vIIPZTf6ppnFAgoYZEtIxCnFlSbObF49V9FX0ttkwzBXBjyvkBZ-17sltkVtW7GD8zNfU-sHIOL732-IIeNXkgyZHbDCRw\",\"expirationTime\":1764021680227,\"refreshToken\":\"AMf-vBzikE_VcC-AzC0oscuLYB4004s7RuPHjz6ysAk39BBBDHDEDvxRYJoNz-Uwpr7GV_tAvg4qU51a-O04Nm916tMlLIY9RdFerEmYWK0Gh6K1qvZfzrFxmGheYucbfTYxY287lOFNEEFJeN1qUz32FRG0rAbiztiJSQQHv_4sgB7oT9T0gto5xkfwOMxN5SwROisuM1Qkxb3de27UyuePOcs5VGVUGJaJQY7cP6VjQuxcq3ySbWC36lZYwxKK4_2ViHXjQubj2--FVdmX0SN3k4xprhRikYUye-tt10i0Jiu6at4lHEdJu5sENr6hUk98FfFDCzy6sENtmUXzr0tiwnwRQUPM_ws-H40iZ5cG1lNfuAKi0nOPtZz1REsumtDwUJ0vtoPwUIyn6U9OeO8xYqCZATjAZYShZJHImrpK--xmUZ1ZKRYFzQIv-0i_vQ3iUvWTnjI3ue4W54_iYA3dC9cciar5Y0DwPIgD6AunP6DSX9JGLyU\"},\"uid\":\"Xv0X6Yea4HXHinLMmBaa1jqDGx62\"}";    @BeforeEach
     public void setup() throws InterruptedException {
-        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 

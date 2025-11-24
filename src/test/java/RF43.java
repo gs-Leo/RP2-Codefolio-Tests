@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RF17 {
+public class RF43 {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -90,58 +90,38 @@ public class RF17 {
     }
 
     @Test
-    public void CT17_01_visualizarAlunosESalvar() throws InterruptedException {
+    public void acessarCursoSemPin() {
+        String nomeCursoSemPin = "Curso com mais de um video sem quiz"; // Nome exato da sua foto
 
-        AcessarGerenciadorCurso();
-        WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
-        ));
-        btnGerenciarCurso.click();
-        WebElement abaAlunos = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[normalize-space(.)='Alunos']")
-        ));
-        abaAlunos.click();
+        System.out.println("Procurando curso SEM PIN: " + nomeCursoSemPin);
 
-        System.out.println("Verificando se o aluno 'Gustavo Fernandes dos Anjos' e seus dados estão visíveis...");
+        String xpathBotaoAcessar = "//h6[normalize-space(.)='" + nomeCursoSemPin + "']/ancestor::div[contains(@class, 'MuiPaper-root')]//button[normalize-space(.)='Acessar']";
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("tbody")));
+        WebElement btnAcessar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathBotaoAcessar)));
 
-        String xPathLinhaGustavo = "//tr[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'gustavo fernandes dos anjos')]";
+        System.out.println("Clicando em 'Acessar'...");
+        btnAcessar.click();
 
-        WebElement linhaGustavo = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath(xPathLinhaGustavo)
-        ));
-        assertNotNull(linhaGustavo, "A linha do aluno 'Gustavo Fernandes dos Anjos' não foi encontrada!");
-
-
-        String textoDaLinha = linhaGustavo.getText();
-        System.out.println("Verificando Email na linha...");
-        assertTrue(textoDaLinha.contains("gustavoanjos.aluno@unipampa.edu.br"), "O email não foi encontrado na linha do aluno!");
-
-        WebElement progressoCell = linhaGustavo.findElement(By.xpath("./td[2]"));
-        String progresso = progressoCell.getText();
-        System.out.println("Verificando Progresso: " + progresso);
-        assertTrue(progresso.contains("%"), "A coluna 'Progresso' (td[2]) não contém o símbolo '%'!");
-
-
-        System.out.println("Informações básicas (Nome, Email, Progresso) verificadas com sucesso.");
-
-        System.out.println("Clicando em 'Salvar Curso'...");
-        WebElement btnSalvarCurso = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[normalize-space(.)='Salvar Curso']")
-        ));
-        btnSalvarCurso.click();
-
-        System.out.println("Verificando sucesso (procurando o pop-up verde)...");
-
-        WebElement popupSucesso = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[normalize-space(.)='Curso atualizado com sucesso!']")
+        System.out.println("Verificando sucesso (acesso direto)...");
+        WebElement abaVideos = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//button[contains(text(), 'Conteúdo') or contains(text(), 'Conteúdo')]") // Ajuste o texto se for minúsculo
         ));
 
-        assertNotNull(popupSucesso, "O pop-up de sucesso 'Curso atualizado' não foi encontrado!");
+        assertNotNull(abaVideos, "Não entrou na página do curso!");
+        System.out.println("SUCESSO: Acesso direto ao curso sem PIN!");
+    }
 
-        System.out.println("*************************************************");
-        System.out.println("SUCESSO: Aba Alunos visualizada, dados verificados e pop-up verificado!");
-        System.out.println("*************************************************");
+    @Test
+    public void validarAusenciaDeCadeado() {
+        String nomeCursoSemPin = "Curso com mais de um video sem quiz";
+
+        System.out.println("Verificando se curso público NÃO tem cadeado...");
+
+        String xpathCadeado = "//h6[normalize-space(.)='" + nomeCursoSemPin + "']/ancestor::div[contains(@class, 'MuiPaper-root')]//*[contains(@data-testid, 'LockIcon')]";
+
+        boolean temCadeado = !driver.findElements(By.xpath(xpathCadeado)).isEmpty();
+
+        assertFalse(temCadeado, "ERRO: O curso público '" + nomeCursoSemPin + "' está exibindo um ícone de cadeado indevidamente!");
+        System.out.println("SUCESSO: Curso público exibido corretamente sem cadeado.");
     }
 }

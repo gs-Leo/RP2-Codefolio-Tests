@@ -65,7 +65,6 @@ public class RF16 {
         }
         System.out.println("Recarregando página para aplicar login...");
         driver.navigate().refresh();
-        // Espera o avatar aparecer para confirmar o login
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@aria-label='Configurações da Conta']")));
     }
 
@@ -77,7 +76,6 @@ public class RF16 {
         }
     }
 
-    // Método auxiliar para navegar até a página de gerenciamento de cursos
     public void AcessarGerenciadorCurso() {
         System.out.println("Acessando o Gerenciador de Cursos...");
         WebElement menuPrincipal = driver.findElement(By.xpath("//button[@aria-label='Configurações da Conta']"));
@@ -94,7 +92,6 @@ public class RF16 {
     @Test
     public void excluirQuizComSucesso() throws InterruptedException {
 
-        // 1-3. Navegação (Avatar -> Gerenciamento -> Curso -> QUIZ)
         AcessarGerenciadorCurso();
         WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
@@ -105,8 +102,6 @@ public class RF16 {
         ));
         abaQuiz.click();
 
-        // 4. Clicar no ícone de Lixeira (🗑️) do *primeiro quiz*
-        // (Baseado na sua foto image_1c9ba6.png, o primeiro DeleteIcon é o do Quiz)
         System.out.println("Procurando o ícone de Lixeira DO QUIZ (o primeiro)...");
 
         WebElement btnLixeiraQuiz = wait.until(ExpectedConditions.elementToBeClickable(
@@ -114,18 +109,14 @@ public class RF16 {
         ));
         btnLixeiraQuiz.click();
 
-        // 5. Confirmar a exclusão no Modal
         System.out.println("Procurando botão de confirmação 'Sim, Excluir'...");
-        // (Chute: o texto do botão de confirmação)
         WebElement btnConfirmarExcluir = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[normalize-space(.)='Sim, Excluir']")
         ));
         btnConfirmarExcluir.click();
 
-        // 6. Verificação Final (Assert)
         System.out.println("Verificando sucesso (procurando o pop-up verde)...");
 
-        // (Chute: O texto do pop-up de exclusão)
         WebElement popupSucesso = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[normalize-space(.)='Quiz deletado com sucesso!']")
         ));
@@ -166,7 +157,7 @@ public class RF16 {
         WebElement btnCancelar = wait.until(ExpectedConditions.presenceOfElementLocated( // Espera "existir"
                 By.xpath("//button[normalize-space(.)='Cancelar']")
         ));
-        js.executeScript("arguments[0].click();", btnCancelar); // Força o clique
+        js.executeScript("arguments[0].click();", btnCancelar);
 
         System.out.println("Verificando se o teste retornou para a página de 'Gerenciamento de Cursos'...");
 

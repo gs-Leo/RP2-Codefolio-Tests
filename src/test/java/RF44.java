@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RF17 {
+public class RF44 {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -90,58 +90,86 @@ public class RF17 {
     }
 
     @Test
-    public void CT17_01_visualizarAlunosESalvar() throws InterruptedException {
+    public void acessarCursoComPinCorreto() {
+        String nomeCursoComPin = "Curso do pin";
+        String pinCorreto = "00";
 
-        AcessarGerenciadorCurso();
-        WebElement btnGerenciarCurso = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("(//button[contains(text(), 'Gerenciar Curso')])[1]")
-        ));
-        btnGerenciarCurso.click();
-        WebElement abaAlunos = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[normalize-space(.)='Alunos']")
-        ));
-        abaAlunos.click();
+        System.out.println("Procurando curso COM PIN: " + nomeCursoComPin);
 
-        System.out.println("Verificando se o aluno 'Gustavo Fernandes dos Anjos' e seus dados estão visíveis...");
+        String xpathCadeado = "//h6[normalize-space(.)='" + nomeCursoComPin + "']/ancestor::div[contains(@class, 'MuiPaper-root')]//*[contains(@data-testid, 'LockIcon')]";
+        WebElement cadeado = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathCadeado)));
+        assertNotNull(cadeado, "O ícone de cadeado não está visível para o curso com PIN!");
+        System.out.println("Cadeado verificado.");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("tbody")));
+        String xpathBotaoAcessar = "//h6[normalize-space(.)='" + nomeCursoComPin + "']/ancestor::div[contains(@class, 'MuiPaper-root')]//button[normalize-space(.)='Acessar']";
+        driver.findElement(By.xpath(xpathBotaoAcessar)).click();
 
-        String xPathLinhaGustavo = "//tr[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'gustavo fernandes dos anjos')]";
-
-        WebElement linhaGustavo = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath(xPathLinhaGustavo)
-        ));
-        assertNotNull(linhaGustavo, "A linha do aluno 'Gustavo Fernandes dos Anjos' não foi encontrada!");
-
-
-        String textoDaLinha = linhaGustavo.getText();
-        System.out.println("Verificando Email na linha...");
-        assertTrue(textoDaLinha.contains("gustavoanjos.aluno@unipampa.edu.br"), "O email não foi encontrado na linha do aluno!");
-
-        WebElement progressoCell = linhaGustavo.findElement(By.xpath("./td[2]"));
-        String progresso = progressoCell.getText();
-        System.out.println("Verificando Progresso: " + progresso);
-        assertTrue(progresso.contains("%"), "A coluna 'Progresso' (td[2]) não contém o símbolo '%'!");
-
-
-        System.out.println("Informações básicas (Nome, Email, Progresso) verificadas com sucesso.");
-
-        System.out.println("Clicando em 'Salvar Curso'...");
-        WebElement btnSalvarCurso = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[normalize-space(.)='Salvar Curso']")
-        ));
-        btnSalvarCurso.click();
-
-        System.out.println("Verificando sucesso (procurando o pop-up verde)...");
-
-        WebElement popupSucesso = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[normalize-space(.)='Curso atualizado com sucesso!']")
+        // 3. Esperar Modal de PIN
+        System.out.println("Aguardando modal de PIN...");
+        WebElement modalTitulo = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(), 'PIN de Acesso')]") // Texto do título ou label
         ));
 
-        assertNotNull(popupSucesso, "O pop-up de sucesso 'Curso atualizado' não foi encontrado!");
+        System.out.println("Digitando PIN...");
+        WebElement inputPin = driver.findElement(By.xpath("//label[text()='PIN de Acesso']/following-sibling::div//input"));
+        inputPin.sendKeys(pinCorreto);
 
-        System.out.println("*************************************************");
-        System.out.println("SUCESSO: Aba Alunos visualizada, dados verificados e pop-up verificado!");
-        System.out.println("*************************************************");
+        System.out.println("Clicando em Enviar...");
+        driver.findElement(By.xpath("//button[normalize-space(.)='Enviar']")).click();
+
+        System.out.println("Verificando acesso...");
+        WebElement abaVideos = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//button[contains(text(), 'Conteúdo')]")
+        ));
+
+        assertNotNull(abaVideos, "Não entrou na página do curso após PIN correto!");
+        System.out.println("SUCESSO: Acesso com PIN realizado!");
     }
+
+    @Test
+    public void acessoNegadoPinIncorreto() {
+        String nomeCursoComPin = "Curso do pin";
+        String pinErrado = "0";
+
+        String xpathBotaoAcessar = "//h6[normalize-space(.)='" + nomeCursoComPin + "']/ancestor::div[contains(@class, 'MuiPaper-root')]//button[normalize-space(.)='Acessar']";
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathBotaoAcessar))).click();
+
+        System.out.println("Testando PIN incorreto...");
+        WebElement inputPin = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//label[text()='PIN de Acesso']/following-sibling::div//input")
+        ));
+        inputPin.sendKeys(pinErrado);
+
+        driver.findElement(By.xpath("//button[normalize-space(.)='Enviar']")).click();
+
+        System.out.println("Verificando mensagem de erro...");
+        WebElement msgErro = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(), 'PIN incorreto. Tente novamente.')]")
+        ));
+
+        assertNotNull(msgErro, "A mensagem de erro de PIN não apareceu!");
+        System.out.println("SUCESSO: Acesso bloqueado com PIN errado!");
+    }
+    @Test
+    public void cancelarInsercaoPin() {
+        String nomeCursoComPin = "Curso do pin";
+
+        String xpathBotaoAcessar = "//h6[normalize-space(.)='" + nomeCursoComPin + "']/ancestor::div[contains(@class, 'MuiPaper-root')]//button[normalize-space(.)='Acessar']";
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathBotaoAcessar))).click();
+
+        WebElement tituloModal = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[contains(text(), 'PIN de Acesso')]")
+        ));
+
+        System.out.println("Pressionando ESC para cancelar...");
+        new org.openqa.selenium.interactions.Actions(driver).sendKeys(Keys.ESCAPE).perform();
+
+        wait.until(ExpectedConditions.invisibilityOf(tituloModal));
+        WebElement btnAcessar = driver.findElement(By.xpath(xpathBotaoAcessar));
+        assertTrue(btnAcessar.isDisplayed(), "O modal não fechou ou o botão Acessar sumiu.");
+
+        System.out.println("SUCESSO: Modal de PIN fechado com ESC.");
+    }
+
+
 }

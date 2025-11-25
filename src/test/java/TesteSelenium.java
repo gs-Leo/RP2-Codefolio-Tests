@@ -1,88 +1,62 @@
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.JavascriptExecutor;
-import io.github.bonigarcia.wdm.WebDriverManager;
-
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TesteSelenium {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private final Duration TIMEOUT = Duration.ofSeconds(15);
-    private final String URL_BASE = "https://testes.codefolio.com.br/listcurso";
-    private JavascriptExecutor js; // Tornando o JS Executor global
+    private final Duration timeout = Duration.ofSeconds(15);
+    private final String url = "https://testes-codefolio.web.app/";
+    private JavascriptExecutor js;
 
-    // --- 1. DADOS DO FIREBASE ---
-    // (Chave do IndexedDB)
-    private final String FIREBASE_KEY = "firebase:authUser:AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg:[DEFAULT]"
-            ;
-
-    // (Valor JSON - Objeto 'value' formatado para Java)
-    private final String FIREBASE_VALUE =
-            "{\"apiKey\":\"AIzaSyARn2qVrSSndFu9JSo5mexrQCMxmORZzCg\"," +
-                    "\"appName\":\"[DEFAULT]\"," +
-                    "\"createdAt\":\"1761920345874\"," +
-                    "\"displayName\":\"Vinicius da Silva Goncalves\"," +
-                    "\"email\":\"viniciusdsg2.aluno@unipampa.edu.br\"," +
-                    "\"emailVerified\":true," +
-                    "\"isAnonymous\":false," +
-                    "\"lastLoginAt\":\"1763320360681\"," +
-                    "\"phoneNumber\":null," +
-                    "\"photoURL\":\"https://lh3.googleusercontent.com/a/ACg8ocJwshmOiwrD7mjw_aS1LUl3MRoUPMJrDKIw_V12ZE2mBbkPsw=s96-c\"," +
-                    "\"providerData\":[{\"providerId\":\"google.com\",\"uid\":\"109644410800543472137\",\"displayName\":\"Vinicius da Silva Goncalves\",\"email\":\"viniciusdsg2.aluno@unipampa.edu.br\",\"phoneNumber\":null}],"+
-                    "\"stsTokenManager\":{" +
-                    "\"accessToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVmluaWNpdXMgZGEgU2lsdmEgR29uY2FsdmVzIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0p3c2htT2l3ckQ3bWp3X2FTMUxVbDNNUm9VUE1KckRLSXdfVjEyWkUybUJia1Bzdz1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9yZWFjdC1uYS1wcmF0aWNhIiwiYXVkIjoicmVhY3QtbmEtcHJhdGljYSIsImF1dGhfdGltZSI6MTc2MzMyMDQ3NywidXNlcl9pZCI6InVsaHZ0N2RuT0RmaWdnTU5PUXphUU9oVlhUbTEiLCJzdWIiOiJ1bGh2dDdkbk9EZmlnZ01OT1F6YVFPaFZYVG0xIiwiaWF0IjoxNzYzMzQ2NDk1LCJleHAiOjE3NjMzNTAwOTUsImVtYWlsIjoidmluaWNpdXNkc2cyLmFsdW5vQHVuaXBhbXBhLmVkdS5iciIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA5NjQ0NDEwODAwNTQzNDcyMTM3Il0sImVtYWlsIjpbInZpbmljaXVzZHNnMi5hbHVub0B1bmlwYW1wYS5lZHUuYnIiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.Gxk4NTRpSlnwqQau5yZoTmcVDSw4ev8Te_zZjK9zJKl30pyuhsYizi5TBnOMvnOEWWpfme9HEBkImjGRHDYhbjW7L2OogPhwvm6ifeV9bkEyhj1eaBZVqtxm9IIsD1pLvW1lH7__nr-QxPWrpkeVFi6XNmHananFLQibvkJhDMWi-2tcq28xaOtpMQyC_eUdb7l5u6JZEZXu8yPoL-F3iVJULTB-U2T6rXJxf5uMOGLYmRNNZgGCEHHNeS6zgwJaHlnOB9evVEg9QKmGs7AcjHua6mR1d9_jMF6Jl61UXEfym4sm_AnvwmmnNk95WUV28v2QVXMXPbmJutYXVhRHeQ\"," +
-                    "\"expirationTime\":1763350095858," +
-                    "\"refreshToken\":\"AMf-vByMvDG87mGyeDirv4ZvFthedwK88F8cZOttlDdHv17lJYWtSgFncX-a0VykCNiYIMpSOGOYqQYhE22PeE9CsTrRxwvIxhB6B0Ihrxtau7NVyYu8v-D7M19oMHFf88nbPvqGO1wVzIiybzxuWi2UnmA7vk8CgKPJRp0COG4CuzeK_HcTesYMY7BOFeLnlYy52eUtQfhAK442a6ukuEokdntaVVDg1DgAOJwU7bqBdtqMVbmhRXQTZHNKldV05w8vZZBCqD_L_OO92e2pCacId19dXN8Ogsf9CqoNWXNawUTiWXeymYIjKIhKMfcNPfdk0kulrzQBPuLF3hJ0COFhgMXnw_BGnxb1ee0UtEG7yIsXqhdNq_2qrVNAZsiGtLtgkDad_dFulFvtU_Lu9NMvUmzwk2oAztfinDxkIt-qq8NZq1jnGagjnRtUOqn0NbDZmvu8WThu2i9WMvL4iBGF2gXtRq1jzw\"," +
-                    "\"tenantId\":null," +
-                    "\"uid\":\"ulhvt7dnODfiggMNOQzaQOhVXTm1\"" +
-                    "}," +
-                    "\"uid\":\"ulhvt7dnODfiggMNOQzaQOhVXTm1\"," +
-                    "\"_redirectEventId\":null}";
-
+    private final String Firebase_key = "firebase:authUser:AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co:[DEFAULT]";
+    private final String Firebase_value = "{\"apiKey\":\"AIzaSyAPX5N0upfNK5hYS2iQzof-XNTcDDYL7Co\",\"appName\":\"[DEFAULT]\",\"createdAt\":\"1763656192294\",\"displayName\":\"Vinicius da Silva Goncalves\",\"email\":\"viniciusdsg2.aluno@unipampa.edu.br\",\"emailVerified\":true,\"isAnonymous\":false,\"lastLoginAt\":\"1763825431339\",\"phoneNumber\":null,\"photoURL\":\"https://lh3.googleusercontent.com/a/ACg8ocJwshmOiwrD7mjw_aS1LUl3MRoUPMJrDKIw_V12ZE2mBbkPsw=s96-c\",\"providerData\":[{\"providerId\":\"google.com\",\"uid\":\"109644410800543472137\",\"displayName\":\"Vinicius da Silva Goncalves\",\"email\":\"viniciusdsg2.aluno@unipampa.edu.br\",\"phoneNumber\":null}],\"stsTokenManager\":{\"accessToken\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVmluaWNpdXMgZGEgU2lsdmEgR29uY2FsdmVzIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0p3c2htT2l3ckQ3bWp3X2FTMUxVbDNNUm9VUE1KckRLSXdfVjEyWkUybUJia1Bzdz1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS90ZXN0ZXMtY29kZWZvbGlvIiwiYXVkIjoidGVzdGVzLWNvZGVmb2xpbyIsImF1dGhfdGltZSI6MTc2MzY3NTcxOCwidXNlcl9pZCI6IkllNDl4T1VzT3dObGtUdWNzR1U1MXVWU1d1MDIiLCJzdWIiOiJJZTQ5eE9Vc093TmxrVHVjc0dVNTF1VlNXdTAyIiwiaWF0IjoxNzY0MDI3Mjg5LCJleHAiOjE3NjQwMzA4ODksImVtYWlsIjoidmluaWNpdXNkc2cyLmFsdW5vQHVuaXBhbXBhLmVkdS5iciIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA5NjQ0NDEwODAwNTQzNDcyMTM3Il0sImVtYWlsIjpbInZpbmljaXVzZHNnMi5hbHVub0B1bmlwYW1wYS5lZHUuYnIiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.o6wCF6qUamdiGoxgZyo-P8rWq2iRyPU_Mgg5eLObWxPKhM5JMKmpDz8N2QcXmeP-fMglwLzk5ZWnv1AUpD2p-AZZ1wfC6qhwAw1eHNXdQgbLlikbYzlD5XtybOGwggt9xrjjGFCO75CqXgXlF2k9GFjD-2RhH_1po91H4B3PP_NTFYv2Mxi1ypYGiFCcVY0XvdayccfL5i1sGHW-hZ6CXjQDFzyueHdw9ZWpPoExVli5pJJIHojy-nuNNnLRX4nJ7nuGiNtZSeGq1iYvfbaomhLAXxQRdFYU5iCP0gB-g_ZR9iX4dH79Mob9ZRE-kPiFGXI1Feh_UGHds11TMUB7FA\",\"expirationTime\":1764030919671,\"refreshToken\":\"AMf-vBxPEtaUKuzD3kd4vDvK-9A-QQZWCxllyOIrOL5OH8sL2Nl_29BrmnAVc-2SCJWdEx5xT2SIMj18N6lYGXIkjc08yHRIzkzckOPsN5ITf7-W9F08gQOD9SGVvlcH4-QH8UM3EvmzWb4yWtaxbIcZ2y5e0IJfB8Ix7hhg2zTAJbn8nbw-6Qwm_lavkfdTHoufUJ3dgp7cN3MS0B6YSG70XwV_PeFWxg0OBAijp2eYtoBYGaZsW4M55Qc9d_MET3BzCFf2LryLz_eMDlNzmKLwkZxUEcg2WKTBAqMVdccid-QxvPNSH9XtOli3bqQ7NOjJqLhuCVKC-LvBUSnQXKBADgT0mOgrWf0btKcczBCAFCdwJS_z0eZoqKGca74zOjhtfKB-2r25t3f5ppuslcFmj1XUIRANqaXknoFBCvXMO76SW6WYiRFA5fUI0N83xZNABVHaVATdyFJOzv_zvunz1eYNzXt-Sw\",\"tenantId\":null},\"uid\":\"Ie49xOUsOwNlkTucsGU51uVSWu02\",\"_redirectEventId\":null}\";";
 
     @BeforeEach
     public void setup() throws InterruptedException {
-        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 
         driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(30));
-        wait = new WebDriverWait(driver, TIMEOUT);
-        js = (JavascriptExecutor) driver; // Inicializa o JS Executor
+        wait = new WebDriverWait(driver, timeout);
+        js = (JavascriptExecutor) driver;
+        driver.get(url);
 
-        // --- ESTRATÉGIA LOCAL STORAGE (Formato Correto) ---
-
-        // 1. Carrega o domínio
-        driver.get(URL_BASE);
-
-        // 2. Injeta os dados no Local Storage
-        System.out.println("Injetando dados de autenticação no Local Storage...");
+        System.out.println("Injetando dados de autenticação no local storage...");
         try {
             js.executeScript("window.localStorage.setItem(arguments[0], arguments[1]);",
-                    FIREBASE_KEY,
-                    FIREBASE_VALUE);
-            System.out.println("Injeção no Local Storage bem-sucedida.");
+                    Firebase_key,
+                    Firebase_value);
+            System.out.println("Injeção no local storage bem-sucedida.");
 
         } catch (Exception e) {
-            System.out.println("Falha crítica ao injetar no Local Storage: " + e.getMessage());
+            System.out.println("Falha critica ao injetar no local storage." + e.getMessage());
             driver.quit();
-            throw new RuntimeException("Falha no setup do Local Storage", e);
+            throw new RuntimeException("Falha no setup do local storage.", e);
         }
 
-        // 3. Recarrega a página (agora com o token injetado)
         System.out.println("Recarregando a página...");
         driver.navigate().refresh();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            System.out.println("A fechar o navegador.");
+            //driver.quit();
+        }
     }
 
     @Test
@@ -96,9 +70,12 @@ public class TesteSelenium {
         //RF12 e RF13
         //edicao_e_exclusao_MaterialExtra();
 
-        quizSelecaoAleatoria();
+        //quizSelecaoAleatoria();
 
         //quizSelecaoManual();
+
+        localizarListagemVideos();
+        CurtirEDescurtirVideo();
     }
 
     /**
@@ -392,7 +369,7 @@ public class TesteSelenium {
     private void quizSelecaoAleatoria() throws InterruptedException {
         System.out.println("\n--- Iniciando casos de testes RF26: Seleção de Estudante (Sorteio Aleatório) ---");
 
-        // --- Passo 1: Clicar em "Em andamento" ---
+
         try {
             System.out.println("Clicando em 'Em andamento'...");
             WebElement CursosBotton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -406,9 +383,9 @@ public class TesteSelenium {
             assertTrue(false, "Falha no Passo 1: Não foi possível clicar em 'Em andamento'.");
             return;
         }
-        Thread.sleep(2000); // Espera após o Passo 1
+        Thread.sleep(2000);
 
-        // --- Passo 2: Clicar no curso Selenium test ---
+
         try {
             System.out.println("Clicando no curso Selenium teste...");
             WebElement cursoSeleniumButton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -422,9 +399,9 @@ public class TesteSelenium {
             assertTrue(false, "Falha no Passo 2: Não foi possível clicar no curso.");
             return;
         }
-        Thread.sleep(2000); // Espera após o Passo 2
+        Thread.sleep(2000);
 
-        // --- Passo 3: Clicar no QUIZ GIGI ---
+
         try {
             System.out.println("Clicando no Quiz GIGI...");
             WebElement QUIZGIGIbutton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -438,20 +415,17 @@ public class TesteSelenium {
             assertTrue(false, "Falha no Passo 3: Não foi possível clicar no Quiz.");
             return;
         }
-        Thread.sleep(2000); // Espera após o Passo 3
+        Thread.sleep(2000);
 
-        // --- Passo 4: Clicar no Botão de Sorteio Aleatório (2 VEZES) ---
         try {
             System.out.println("Tentando realizar o sorteio aleatório (2 vezes)...");
             WebElement sorteioButton = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//*[@id=\":r67:\"]")
             ));
 
-            // PRIMEIRO CLIQUE
             sorteioButton.click();
             System.out.println("➡️ Primeiro sorteio realizado.");
 
-            // SEGUNDO CLIQUE (Espera menor para processamento entre cliques)
             Thread.sleep(1000);
             sorteioButton.click();
             System.out.println("➡️ Segundo sorteio realizado.");
@@ -466,17 +440,16 @@ public class TesteSelenium {
         }
         Thread.sleep(2000);
 
-        // --- Passo 5: Sorteio com 1 aluno (CT com aluno único) ---
         try {
             System.out.println("Executando segundo caso de teste: Sorteio com 1 aluno");
-            Thread.sleep(2000); // Timer de 2 segundos conforme solicitado
+            Thread.sleep(2000);
 
-            // 5a. Capturar o estado inicial da interface para validação
+            // Estado inicial
             WebElement contentContainer = driver.findElement(By.xpath("//*[@id=\"quiz-content-container\"]/div/div[1]/div/div/div"));
             String initialState = contentContainer.getAttribute("outerHTML");
             System.out.println("Estado inicial da tela capturado.");
 
-            // -- Início da Sub-etapa de remoção de alunos --
+
             try {
                 System.out.println("Retirando os alunos e deixando apenas 1");
 
@@ -492,14 +465,14 @@ public class TesteSelenium {
                 ));
                 aluno1button.click();
 
-                Thread.sleep(2000); // Espera
+                Thread.sleep(2000);
                 System.out.println("Retirando segundo aluno...");
                 WebElement aluno2button = wait.until(ExpectedConditions.elementToBeClickable(
                         By.xpath("//*[@id=\":r6g:\"]")
                 ));
                 aluno2button.click();
 
-                Thread.sleep(2000); // Espera após a remoção
+                Thread.sleep(2000);
                 System.out.println("✅ Remoção de alunos concluída.");
 
 
@@ -509,7 +482,6 @@ public class TesteSelenium {
                 assertTrue(false, "Falha no Passo 5 (Remoção de Alunos).");
                 return;
             }
-            // -- Fim da Sub-etapa de remoção de alunos --
 
             System.out.println("Realizando sorteio com 1 aluno...");
             WebElement sorteioAluno = wait.until(ExpectedConditions.elementToBeClickable(
@@ -518,7 +490,7 @@ public class TesteSelenium {
             sorteioAluno.click();
             System.out.println("✅ Sorteio realizado.");
 
-            // 5d. Capturar o estado final e validar
+            // estado final
             Thread.sleep(2000); // Espera para o processamento do sorteio
             String finalState = contentContainer.getAttribute("outerHTML");
 
@@ -537,17 +509,17 @@ public class TesteSelenium {
             return;
         }
 
-        // --- Validação Final do Sorteio ---
+
         System.out.println("SUCESSO: Todos os passos de navegação e sorteios foram executados.");
     }
     private void quizSelecaoManual() throws InterruptedException {
         System.out.println("Iniciando casos de testes RF27: Seleção Manual...");
 
-        // --- Passo 1: Refresh na página para limpar estados anteriores ---
+        // --- Passo 1: Refresh
         try {
-            System.out.println("Atualizando a página (Refresh) para garantir o estado inicial...");
+            System.out.println("Atualizando a página para garantir o estado inicial...");
             driver.navigate().refresh();
-            wait.until(ExpectedConditions.urlContains(URL_BASE)); // Espera a URL base carregar
+            wait.until(ExpectedConditions.urlContains(url)); // Espera a URL base carregar
             System.out.println("✅ Página recarregada com sucesso.");
         } catch (Exception e) {
             System.err.println("❌ ERRO NO PASSO 1: Falha ao recarregar a página.");
@@ -559,7 +531,7 @@ public class TesteSelenium {
 
         // --- Passo 2: Clicar no primeiro elemento
         try {
-            System.out.println("Clicando no elemento de navegação inicial (ID: :r5:)...");
+            System.out.println("Clicando na opção escolha um aluno...");
             WebElement elementR5 = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//*[@id=\":r5:\"]")
             ));
@@ -575,7 +547,7 @@ public class TesteSelenium {
 
         // --- Passo 3: Clicar no segundo elemento
         try {
-            System.out.println("Clicando no elemento de seleção (ID: :r7g:)...");
+            System.out.println("Clicando no elemento de seleção de aluno");
             WebElement elementR7g = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//*[@id=\":r7g:\"]")
             ));
@@ -591,7 +563,7 @@ public class TesteSelenium {
 
         // --- Passo 4: Clicar no terceiro elemento
         try {
-            System.out.println("Clicando no botão final de seleção (ID: :r8s:)...");
+            System.out.println("Clicando no botão final de seleção...");
             WebElement elementR8s = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//*[@id=\":r8s:\"]")
             ));
@@ -615,7 +587,8 @@ public class TesteSelenium {
             // Capturamos o estado ATUAL da interface
             String finalState = contentContainer.getAttribute("outerHTML");
 
-            // NOTE: Sem o estado inicial, esta verificação apenas garante que o elemento existe.
+            // NOTE: Sem o estado inicial, esta
+            // verificação apenas garante que o elemento existe.
             if (finalState == null || finalState.trim().isEmpty() || finalState.contains("Estado Antigo")) {
                 System.err.println("❌ Resultado da Validação CT1: Caso de teste de seleção manual não passou.");
                 System.err.println("Motivo: O conteúdo do quiz (modal) parece não ter mudado ou está vazio.");
@@ -635,7 +608,7 @@ public class TesteSelenium {
         System.out.println("\n--- Iniciando CT2: Remoção de Aluno ---");
         try {
 
-            System.out.println("Clicando para remover o aluno (ID: :r6k:)...");
+            System.out.println("Clicando para remover o aluno...");
             WebElement removeButton = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//*[@id=\":r6k:\"]")
             ));
@@ -650,7 +623,7 @@ public class TesteSelenium {
         Thread.sleep(2000); // Espera após a remoção
 
 
-        System.out.println("Tentando clicar no aluno removido (ID: :r6j:). ESPERA-SE FALHA...");
+        System.out.println("Tentando clicar no aluno removido...");
         try {
 
             WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -659,7 +632,7 @@ public class TesteSelenium {
             ));
             alunoRemovido.click();
 
-            // Se o código chegar aqui, significa que o aluno não foi removido.
+
             System.err.println("❌ Resultado CT2: Caso de teste não passou!");
             System.err.println("Motivo: O elemento do aluno removido ainda está clicável na tela.");
             assertTrue(false, "Falha no Passo 6b: O aluno não foi removido corretamente.");
@@ -673,5 +646,166 @@ public class TesteSelenium {
 
         System.out.println("SUCESSO: Todos os passos de Seleção Manual (RF27) foram executados.");
     }
-    
+
+
+
+
+
+
+    /**
+     * Localiza o iframe, foca, inicia a reprodução do vídeo (CT 1) e testa a funcionalidade de Tela Cheia (CT 2).
+     */
+    private void localizarListagemVideos() throws InterruptedException {
+        System.out.println("\n--- Iniciando CT01 RF39: Reproduzir o video da listagem...");
+
+        final By IFRAME_SELECTOR = By.tagName("iframe");
+        final By PLAY_BUTTON_ARIA_LABEL = By.xpath("//button[@aria-label='Reproduzir']");
+        final By VIDEO_ELEMENT_TAG = By.tagName("video");
+
+        // NOVO SELETOR: O CONTAINER PRINCIPAL DO PLAYER, que aceita comandos de teclado.
+        final By MOVIE_PLAYER_CONTAINER = By.id("movie_player");
+
+        // Seletores para Tela Cheia (Apenas para referência)
+        final By FULLSCREEN_BUTTON_XPATH = By.xpath("//*[@id=\"movie_player\"]/div[31]/div[2]/div[2]/button[6]");
+        final By EXIT_FULLSCREEN_BUTTON_XPATH = FULLSCREEN_BUTTON_XPATH;
+
+        WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        Actions actions = new Actions(driver);
+
+        try {
+            // 1. Tentar focar o IFRAME
+            System.out.println("1. Tentando localizar e focar o iframe do player...");
+            WebElement iframeElement = shortWait.until(ExpectedConditions.presenceOfElementLocated(IFRAME_SELECTOR));
+            driver.switchTo().frame(iframeElement);
+            System.out.println("✅ Foco alterado para o iframe do player.");
+
+            // 2. Inicia a reprodução (CÓDIGO ANTERIOR)
+            System.out.println("2. Executando clique no botão 'Reproduzir'...");
+            WebElement playButton = shortWait.until(ExpectedConditions.elementToBeClickable(PLAY_BUTTON_ARIA_LABEL));
+            actions.moveToElement(playButton).click().build().perform();
+            System.out.println("✅ Clique no botão 'Reproduzir' realizado via Actions.");
+            Thread.sleep(1000);
+
+
+            System.out.println("3. Verificando se o video esta sendo reproduzido via JavaScript...");
+            WebElement videoElement = shortWait.until(ExpectedConditions.presenceOfElementLocated(VIDEO_ELEMENT_TAG));
+            shortWait.until(driver -> {
+                Boolean isPaused = (Boolean) js.executeScript("return arguments[0].paused;", videoElement);
+                System.out.println("   -> Estado atual do vídeo (paused): " + isPaused);
+                return !isPaused;
+            });
+            System.out.println("✅ CT 1 (Reprodução): O vídeo está bombandooooo.");
+            Thread.sleep(3000);
+
+            // ---------------------------------------------------------------------------------------------
+            // --- CT 2: TESTE DE TELA CHEIA
+            // ---------------------------------------------------------------------------------------------
+
+            System.out.println("\nComeçando caso de teste 2: Ativar Tela Cheia via Foco no #movie_player");
+
+            // 4. LOCALIZAR O CONTAINER PRINCIPAL (#movie_player)
+            WebElement moviePlayerContainer = shortWait.until(ExpectedConditions.presenceOfElementLocated(MOVIE_PLAYER_CONTAINER));
+
+            // 5. ATIVAR TELA CHEIA: Simular a tecla 'F'
+            System.out.println("5. Enviando tecla 'F' para o container principal para ativar a Tela Cheia...");
+            // O comando sendKeys deve ser enviado para o container principal (#movie_player)
+            moviePlayerContainer.sendKeys("f");
+            System.out.println("✅ Tecla 'F' enviada. (Esperando a mudança de estado...)");
+
+
+            System.out.println("Aguardando 3 segundos em Tela Cheia.");
+            Thread.sleep(3000);
+
+            // 6. DESATIVAR TELA CHEIA: Simular a tecla 'F' novamente
+            System.out.println("6. Enviando tecla 'F' novamente para Sair da Tela Cheia...");
+            moviePlayerContainer.sendKeys("f");
+            System.out.println("✅ Saiu da Tela Cheia.");
+
+
+            System.out.println("Fim do CT 2: Aguardando 2 segundos para o próximo requisito funcional.");
+            Thread.sleep(2000);
+
+        } catch (Exception e) {
+            System.err.println("❌ ERRO FATAL: Falha na prova de reprodução ou na ativação/desativação da Tela Cheia.");
+            System.err.println("Detalhes do Erro: " + e.getMessage());
+
+            assertTrue(false, "Falha na prova de reprodução ou Tela Cheia.");
+        } finally {
+            // É fundamental retornar o foco para o conteúdo principal da página
+            driver.switchTo().defaultContent();
+        }
+    }
+    /**
+     * RF40 - Vídeos (Curtir e Descurtir):
+     */
+    private void CurtirEDescurtirVideo() throws InterruptedException {
+        System.out.println("\n--- Iniciando RF40: Teste de Curtir e Descurtir Vídeos ---");
+
+        // --- LOCALIZADORES ROBUSTOS ---
+        // Curtir (Like): Botão que contém o ícone de polegar para cima
+        final By LIKE_BUTTON_XPATH = By.xpath("//button[.//svg[@data-testid='ThumbUpIcon']]");
+        // Descurtir (Dislike): Botão que contém o ícone de polegar para baixo
+        final By DISLIKE_BUTTON_XPATH = By.xpath("//button[.//svg[@data-testid='ThumbDownIcon']]");
+
+        WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        try {
+            Thread.sleep(3000); // Pausa inicial para estabilização da lista de vídeos
+
+            // ----------------------------------------------------------------------------------
+            // --- CT1 RF40: CURTIR E REVERTER CURTIDA (LIKE / UNLIKE) ---
+            // ----------------------------------------------------------------------------------
+
+            System.out.println("\nComecando CT1 RF40: Curtir e Reverter Curtida");
+
+            // 1. Localizar o Botão de Curtir
+            WebElement likeButton = shortWait.until(ExpectedConditions.elementToBeClickable(LIKE_BUTTON_XPATH));
+
+            // 2. Clique 1: CURTIR (LIKE)
+            System.out.println("-> Clicando 1/2 (Curtir): Tentativa de registrar Curtida...");
+            js.executeScript("arguments[0].click();", likeButton);
+
+            Thread.sleep(3000); // Pausa após o primeiro clique
+            System.out.println("✅ Clique 1 (Curtir) realizado.");
+
+            // 3. Clique 2: REVERTER CURTIDA (UNLIKE)
+            System.out.println("-> Clicando 2/2 (Reverter): Tentativa de remover a Curtida...");
+            js.executeScript("arguments[0].click();", likeButton);
+
+            Thread.sleep(3000); // Pausa após o segundo clique
+            System.out.println("✅ Clique 2 (Reverter Curtida) realizado.");
+
+            System.out.println("✅ CT1 RF40 concluído com sucesso.");
+
+
+            // ----------------------------------------------------------------------------------
+            // --- CT2 RF40: DESCUTIR E REVERTER DESCUTIDA (DISLIKE / UNDISLIKE) ---
+            // ----------------------------------------------------------------------------------
+
+            System.out.println("\nComecando CT2 RF40: Descurtir e Reverter Descurtida");
+
+            WebElement dislikeButton = shortWait.until(ExpectedConditions.elementToBeClickable(DISLIKE_BUTTON_XPATH));
+
+            System.out.println("-> Clicando 1/2 (Descurtir): Tentativa de registrar Descurtida...");
+            js.executeScript("arguments[0].click();", dislikeButton);
+
+            Thread.sleep(3000);
+            System.out.println("✅ Clique 1 (Descurtir) realizado.");
+
+
+            System.out.println("-> Clicando 2/2 (Reverter): Tentativa de remover a Descurtida...");
+            js.executeScript("arguments[0].click();", dislikeButton);
+
+            Thread.sleep(3000);
+            System.out.println("✅ Clique 2 (Reverter Descurtida) realizado.");
+
+            System.out.println("\n✅ RF40 Testes de Curtir/Descurtir concluídos com sucesso.");
+
+        } catch (Exception e) {
+            System.err.println("❌ ERRO FATAL no RF40: Falha na interação com botões de Like/Dislike.");
+            System.err.println("Detalhes do Erro: " + e.getMessage());
+
+            assertTrue(false, "Falha na execução dos Casos de Teste RF40.");
+        }
+    }
 }
